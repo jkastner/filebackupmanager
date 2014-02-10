@@ -1,0 +1,6 @@
+ /*Config file format
+         * RunAutomatically
+         * ShutdownOnCompletion
+         * StaggerBackup
+         * TargetDay (irrelevant if the top is false)
+         */

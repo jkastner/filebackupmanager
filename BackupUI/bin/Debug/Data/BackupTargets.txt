@@ -1,0 +1,7 @@
+C:\Users\johnathan\Desktop
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+C:\Users\johnathan\Documents\Visual Studio 2010\Projects
+C:\Users\johnathan\Google Drive
+C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive
+\\tntserver\users\JohnathanK\Shared
+D:\LocalRepository
