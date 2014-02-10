@@ -70,6 +70,9 @@ namespace SimpleBackupConsole
                 BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
                 return;
             }
+            DateTime startTime = DateTime.Now;
+
+            TextReporter.Report("Backup started at "+DateTime.Now.ToString(), TextReporter.TextType.Output);
             TextReporter.Report("Estimating copy size...", TextReporter.TextType.Output);
             Dictionary<String, long> directorySizes = GetAllDirectorySizes();
             _overallMax = directorySizes.Sum(x => x.Value);
@@ -136,6 +139,10 @@ namespace SimpleBackupConsole
                 BackupRunnerViewModel.Instance.OnShutdownRequested(new EventArgs());
                 TextReporter.Report("Shutting down...", TextReporter.TextType.Output);
             }
+            DateTime endTime = DateTime.Now;
+            var backupDuration = Math.Round((endTime - startTime).TotalMinutes, 1);
+            TextReporter.Report("Backup ended at " + DateTime.Now.ToString(), TextReporter.TextType.Output);
+            TextReporter.Report("Duration:  " + backupDuration + " minutes", TextReporter.TextType.Output);
             BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
         }
 

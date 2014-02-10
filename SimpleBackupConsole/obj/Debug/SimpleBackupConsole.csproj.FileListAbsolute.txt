@@ -14,3 +14,8 @@ C:\Users\johnathan\Documents\Visual Studio 2012\Projects\simple-backup-console-u
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\simple-backup-console-ui\SimpleBackupConsole\obj\Debug\SimpleBackupConsole.csprojResolveAssemblyReference.cache
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\simple-backup-console-ui\SimpleBackupConsole\obj\Debug\BackupSystemDLL.dll
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\simple-backup-console-ui\SimpleBackupConsole\obj\Debug\BackupSystemDLL.pdb
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\SimpleBackupConsole\bin\Debug\BackupSystemDLL.dll
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\SimpleBackupConsole\bin\Debug\BackupSystemDLL.pdb
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\SimpleBackupConsole\obj\Debug\SimpleBackupConsole.csprojResolveAssemblyReference.cache
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\SimpleBackupConsole\obj\Debug\BackupSystemDLL.dll
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\SimpleBackupConsole\obj\Debug\BackupSystemDLL.pdb
