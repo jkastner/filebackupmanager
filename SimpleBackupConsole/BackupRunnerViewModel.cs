@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Text;
@@ -14,6 +15,21 @@ namespace SimpleBackupConsole
         private bool _shutdownOnCompletion;
         private bool _staggerBackup = true;
         private DayOfWeek _targetDay = DateTime.Now.DayOfWeek;
+
+        private ObservableCollection<BackupPattern> _allBackupPatterns = new ObservableCollection<BackupPattern>();
+        public ObservableCollection<BackupPattern> AllBackupPatterns
+        {
+            get { return _allBackupPatterns; }
+            set { _allBackupPatterns = value; }
+        }
+        private BackupPattern _currentPattern;
+        public BackupPattern CurrentBackupPattern
+        {
+            get { return _currentPattern; }
+            set { _currentPattern = value; }
+        }
+        
+
 
         private BackupRunnerViewModel()
         {

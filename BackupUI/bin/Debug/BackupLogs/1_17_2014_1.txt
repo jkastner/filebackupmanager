@@ -1,0 +1,36 @@
+Original backup folders will be deleted:
+	\\tntserver\users\JohnathanK\BackupDestTest_2
+
+Backup:
+From: C:\Users\johnathan\Desktop
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\Desktop
+From: C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\Projects
+From: C:\Users\johnathan\Documents\Visual Studio 2010\Projects
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\Projects
+From: C:\Users\johnathan\Google Drive
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\Google Drive
+From: C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\archive
+From: \\tntserver\users\JohnathanK\Shared
+	To: \\tntserver\users\JohnathanK\BackupDestTest_2\Shared
+WARNING: both
+	C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	and
+	C:\Users\johnathan\Documents\Visual Studio 2010\Projects will have the same backup name. One will have its name incremented on backup.
+WARNING: \\tntserver\users\JohnathanK does not exist.
+
+
+-----------------------
+Starting backup.....
+Getting size of backup...
+Starting creation of backup in: \\tntserver\users\JohnathanK\BackupDestTest
+	Deleting \\tntserver\users\JohnathanK\BackupDestTest
+	Creating \\tntserver\users\JohnathanK\BackupDestTest
+		Copying C:\Users\johnathan\Desktop to \\tntserver\users\JohnathanK\BackupDestTest\Desktop
+Backup canceled.
+				ERROR: Could not copy C:\Users\johnathan\Desktop to \\tntserver\users\JohnathanK\BackupDestTest
+				Exception: The operation was canceled.
+Backup canceled.
+		ERROR: The operation was canceled.
+Completed.

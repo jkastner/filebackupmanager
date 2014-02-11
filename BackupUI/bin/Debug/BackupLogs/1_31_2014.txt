@@ -1,0 +1,30 @@
+Original backup folders will be deleted:
+	\\tntserver\users\JohnathanK\Backup
+
+Backup:
+From: C:\Users\johnathan\Desktop
+	To: \\tntserver\users\JohnathanK\Backup\Desktop
+From: C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	To: \\tntserver\users\JohnathanK\Backup\Projects
+From: C:\Users\johnathan\Documents\Visual Studio 2010\Projects
+	To: \\tntserver\users\JohnathanK\Backup\Projects
+From: C:\Users\johnathan\Google Drive
+	To: \\tntserver\users\JohnathanK\Backup\Google Drive
+From: C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive
+	To: \\tntserver\users\JohnathanK\Backup\archive
+From: \\tntserver\users\JohnathanK\Shared
+	To: \\tntserver\users\JohnathanK\Backup\Shared
+From: D:\LocalRepository
+	To: \\tntserver\users\JohnathanK\Backup\LocalRepository
+WARNING: both
+	C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	and
+	C:\Users\johnathan\Documents\Visual Studio 2010\Projects will have the same backup name. One will have its name incremented on backup.
+
+
+-----------------------
+Starting backup.....
+Starting creation of backup in: \\tntserver\users\JohnathanK\Backup
+	Deleting \\tntserver\users\JohnathanK\Backup
+	ERROR: Access to the path 'desktop.ini' is denied.
+Completed.

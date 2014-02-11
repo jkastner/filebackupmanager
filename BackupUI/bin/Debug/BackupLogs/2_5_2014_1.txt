@@ -1,0 +1,82 @@
+
+Backup:
+From: C:\Users\johnathan\Desktop
+	To: \\tntserver\users\JohnathanK\Backup_2\Desktop
+From: C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	To: \\tntserver\users\JohnathanK\Backup_2\Projects
+From: C:\Users\johnathan\Documents\Visual Studio 2010\Projects
+	To: \\tntserver\users\JohnathanK\Backup_2\Projects
+From: C:\Users\johnathan\Google Drive
+	To: \\tntserver\users\JohnathanK\Backup_2\Google Drive
+From: C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive
+	To: \\tntserver\users\JohnathanK\Backup_2\archive
+From: \\tntserver\users\JohnathanK\Shared
+	To: \\tntserver\users\JohnathanK\Backup_2\Shared
+From: D:\LocalRepository
+	To: \\tntserver\users\JohnathanK\Backup_2\LocalRepository
+WARNING: both
+	C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+	and
+	C:\Users\johnathan\Documents\Visual Studio 2010\Projects have the same backup name. They will be renamed in the backup to:
+	Visual Studio 2012_Projects
+	and
+	Visual Studio 2010_Projects
+
+
+-----------------------
+Starting backup.....
+Estimating copy size...
+Starting backup in: \\tntserver\users\JohnathanK\Backup
+	Creating \\tntserver\users\JohnathanK\Backup
+		Copying C:\Users\johnathan\Desktop to \\tntserver\users\JohnathanK\Backup\Desktop
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\Desktop
+		Completed copy of C:\Users\johnathan\Desktop
+		Copying C:\Users\johnathan\Documents\Visual Studio 2012\Projects to \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects
+		Completed copy of C:\Users\johnathan\Documents\Visual Studio 2012\Projects
+		Copying C:\Users\johnathan\Documents\Visual Studio 2010\Projects to \\tntserver\users\JohnathanK\Backup\Visual Studio 2010_Projects
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\Visual Studio 2010_Projects
+		Completed copy of C:\Users\johnathan\Documents\Visual Studio 2010\Projects
+		Copying C:\Users\johnathan\Google Drive to \\tntserver\users\JohnathanK\Backup\Google Drive
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\Google Drive
+		Completed copy of C:\Users\johnathan\Google Drive
+		Copying C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive to \\tntserver\users\JohnathanK\Backup\archive
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\archive
+		Completed copy of C:\Users\johnathan\AppData\Local\Lotus\Notes\Data\archive
+		Copying \\tntserver\users\JohnathanK\Shared to \\tntserver\users\JohnathanK\Backup\Shared
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\Shared
+		Completed copy of \\tntserver\users\JohnathanK\Shared
+		Copying D:\LocalRepository to \\tntserver\users\JohnathanK\Backup\LocalRepository
+			Copying files...
+			Cleaning old files from \\tntserver\users\JohnathanK\Backup\LocalRepository
+		Completed copy of D:\LocalRepository
+Completed.
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\bin\Debug\BackupSystem.exe	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\bin\Debug\BackupSystem.pdb	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\bin\Debug\BackupSystem.vshost.exe	Explanation: Source file was more recent - 2/5/2014 10:24:04 AM	2/5/2014 10:05:34 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\bin\Debug\BackupSystemDLL.dll	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\bin\Debug\BackupSystemDLL.pdb	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\App.g.cs	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\App.g.i.cs	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupSystem.exe	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupSystem.g.resources	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupSystem.pdb	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupSystem_MarkupCompile.cache	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupUI.csproj.FileListAbsolute.txt	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupUI.csprojResolveAssemblyReference.cache	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\BackupUI.Properties.Resources.resources	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\MainWindow.baml	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\MainWindow.g.cs	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\BackupUI\obj\Debug\MainWindow.g.i.cs	Explanation: Source file was more recent - 2/5/2014 10:35:27 AM	2/5/2014 10:17:43 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\SimpleBackupConsole\BackupRunner.cs	Explanation: Source file was more recent - 2/5/2014 10:35:24 AM	2/5/2014 10:05:30 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\SimpleBackupConsole\bin\Debug\BackupSystemDLL.dll	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\SimpleBackupConsole\bin\Debug\BackupSystemDLL.pdb	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\SimpleBackupConsole\obj\Debug\BackupSystemDLL.dll	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Visual Studio 2012_Projects\simple-backup-console-ui\SimpleBackupConsole\obj\Debug\BackupSystemDLL.pdb	Explanation: Source file was more recent - 2/5/2014 10:35:26 AM	2/5/2014 10:17:42 AM
+			Copying file \\tntserver\users\JohnathanK\Backup\Google Drive\SharedDailyPrograms\WorkDatabase.kdb.lock	Explanation: Source file was more recent - 2/5/2014 10:32:26 AM	2/5/2014 10:23:17 AM

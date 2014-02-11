@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BackupPattern.cs" />
     <Compile Include="BackupRunner.cs" />
     <Compile Include="BackupRunnerViewModel.cs" />
     <Compile Include="ConfigReader.cs" />
