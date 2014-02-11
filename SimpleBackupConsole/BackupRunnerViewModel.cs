@@ -26,7 +26,11 @@ namespace SimpleBackupConsole
         public BackupPattern CurrentBackupPattern
         {
             get { return _currentPattern; }
-            set { _currentPattern = value; }
+            set
+            {
+                _currentPattern = value;
+                OnBackupPatternDescriptionChanged(null);
+            }
         }
         
 
@@ -94,34 +98,38 @@ namespace SimpleBackupConsole
         {
             get
             {
+                if (_currentPattern == null)
+                {
+                    return "Please select a backup pattern.";
+                }
                 var sb = new StringBuilder();
                 sb.Append("\nBackup:");
-                foreach (string curSource in BackupRunner.Instance.DirectoriesToBackup)
+                foreach (var curSource in _currentPattern.Sources)
                 {
-                    sb.Append("\nFrom: " + curSource);
-                    foreach (string curDestination in BackupRunner.Instance.DirectoriesToHoldBackups)
+                    sb.Append("\nFrom: " + curSource.BackupSource);
+                    foreach (var curDestination in _currentPattern.Pattern[curSource])
                     {
-                        String destinationWithStagger = curDestination;
+                        String destinationWithStagger = curDestination.BackupDestination;
                         if (StaggerBackup)
                         {
-                            destinationWithStagger = curDestination + "_2";
+                            destinationWithStagger = curDestination.BackupDestination + "_2";
                         }
 
-                        sb.Append("\n\tTo: " + destinationWithStagger + "\\" + Path.GetFileName(curSource));
+                        sb.Append("\n\tTo: " + destinationWithStagger + "\\" + Path.GetFileName(curSource.BackupSource));
                     }
                 }
                 var backupDirNameUniqueness = new Dictionary<String, String>();
-                foreach (string curSource in BackupRunner.Instance.DirectoriesToBackup)
+                foreach (var curSource in _currentPattern.Sources)
                 {
-                    if (!Directory.Exists(curSource))
+                    if (!Directory.Exists(curSource.BackupSource))
                     {
                         sb.Append("\nWARNING: " + curSource + " does not exist.");
                     }
-                    if (backupDirNameUniqueness.ContainsKey(Path.GetFileName(curSource)))
+                    if (backupDirNameUniqueness.ContainsKey(Path.GetFileName(curSource.BackupSource)))
                     {
                         var uniqueNames = BackupRunnerViewModel.Instance.GetUniqueNameAttempt(
-                            backupDirNameUniqueness[Path.GetFileName(curSource)], curSource);
-                        sb.Append("\nWARNING: both\n\t" + backupDirNameUniqueness[Path.GetFileName(curSource)] +
+                            backupDirNameUniqueness[Path.GetFileName(curSource.BackupSource)], curSource.BackupSource);
+                        sb.Append("\nWARNING: both\n\t" + backupDirNameUniqueness[Path.GetFileName(curSource.BackupSource)] +
                                   "\n\tand\n\t" + curSource +
                                   " have the same backup name. They will be renamed in the backup to:\n\t"+uniqueNames.Item1+"\n\tand\n\t"+uniqueNames.Item2);
                         
@@ -129,13 +137,13 @@ namespace SimpleBackupConsole
                     }
                     else
                     {
-                        backupDirNameUniqueness.Add(Path.GetFileName(curSource), curSource);
+                        backupDirNameUniqueness.Add(Path.GetFileName(curSource.BackupSource), curSource.BackupSource);
                     }
                 }
-                foreach (string curDest in BackupRunner.Instance.DirectoriesToHoldBackups)
+                foreach (var curDest in _currentPattern.Destinations)
                 {
-                    string parentName = Directory.GetParent(curDest).FullName;
-                    if (!Directory.Exists(curDest))
+                    string parentName = Directory.GetParent(curDest.BackupDestination).FullName;
+                    if (!Directory.Exists(curDest.BackupDestination))
                     {
                         sb.Append("\nWARNING: " + parentName + " does not exist.");
                     }

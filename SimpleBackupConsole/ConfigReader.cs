@@ -17,14 +17,16 @@ namespace SimpleBackupConsole
             get { return _configError; }
             set { _configError = value; }
         }
-        
-        public static void ReadBackup()
+
+        public static BackupPattern ReadBackup()
         {
-            BackupRunner br = BackupRunner.Instance;
+            BackupPattern bp = new BackupPattern("Main");
             var baseDir = Directory.GetParent(Application.ExecutablePath);
             string backupFile = baseDir+@"\Data\BackupTargets.txt";
             string directoriesToHoldBackupsFile = baseDir + @"\Data\DirectoriesToHoldBackups.txt";
             string configFile = baseDir + @"\Data\ConfigFile.txt";
+            List<String> directoriesToBackup = new List<string>();
+            List<String> directoriesToHoldBackups = new List<string>();
             if (!File.Exists(backupFile))
             {
                 TextReporter.Report("Could not find config file - " + backupFile, TextReporter.TextType.InitialError);
@@ -48,7 +50,7 @@ namespace SimpleBackupConsole
                     String curFix = cur.Trim();
                     if (!String.IsNullOrEmpty(curFix))
                     {
-                        br.DirectoriesToBackup.Add(curFix);
+                        directoriesToBackup.Add(curFix);
                     }
                 }
                 var lines = File.ReadAllLines(directoriesToHoldBackupsFile);
@@ -56,7 +58,7 @@ namespace SimpleBackupConsole
                 {
                     if (!String.IsNullOrWhiteSpace(cur))
                     {
-                        br.DirectoriesToHoldBackups.Add(cur);
+                        directoriesToHoldBackups.Add(cur);
                     }
                 }
                 var configFileLines = File.ReadAllLines(configFile);
@@ -64,6 +66,14 @@ namespace SimpleBackupConsole
                 BackupRunnerViewModel.Instance.OnBackupPatternDescriptionChanged(new EventArgs());
 
             }
+            foreach (var cursource in directoriesToBackup)
+            {
+                foreach (var curdest in directoriesToHoldBackups)
+                {
+                    bp.AddBackup(new Source(cursource), new Destination(curdest));
+                }
+            }
+            return bp;
         }
         /*Config file format
         * RunAutomatically

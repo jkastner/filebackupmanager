@@ -171,7 +171,7 @@ namespace BackupUI
 
         private void ReadBackupPattern()
         {
-            ConfigReader.ReadBackup();
+            BackupRunnerViewModel.Instance.CurrentBackupPattern = ConfigReader.ReadBackup();
         }
 
         private void StartBackup_Button_Click(object sender, RoutedEventArgs e)
@@ -184,7 +184,7 @@ namespace BackupUI
             StartBackup_Button.IsEnabled = false;
             StaggerBackup_CheckBox.IsEnabled = false;
             ReportTextToUI("\n\n-----------------------\nStarting backup.....", TextReporter.TextType.Output);
-            var t = new Task(() => BackupRunner.Instance.StartBackup());
+            var t = new Task(() => BackupRunner.Instance.StartBackup(BackupRunnerViewModel.Instance.CurrentBackupPattern));
             t.Start();
         }
     }
