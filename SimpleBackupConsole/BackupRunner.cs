@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
 
@@ -13,6 +11,10 @@ namespace SimpleBackupConsole
     {
         private static bool _debugOnly = false;
         private static BackupRunner _instance;
+        private long _currentMax;
+        private long _currentProgress;
+        private long _overallMax;
+        private long _overallProgress;
 
         private int _tabIndex;
 
@@ -45,15 +47,13 @@ namespace SimpleBackupConsole
             }
         }
 
-        private long _currentProgress, _overallProgress, _currentMax, _overallMax;
-
         public void StartBackup(BackupPattern currentBackup)
         {
             if (DateTime.Now.Date.DayOfWeek != BackupRunnerViewModel.Instance.TargetDay)
             {
                 BackupRunnerViewModel.Instance.CloseUIOnCompleted = true;
                 TextReporter.Report(
-                    "Target day " + BackupRunnerViewModel.Instance.TargetDay.ToString() + " did not match current day " +
+                    "Target day " + BackupRunnerViewModel.Instance.TargetDay + " did not match current day " +
                     DateTime.Now.DayOfWeek, TextReporter.TextType.Output);
                 BackupRunnerViewModel.Instance.ShouldWriteLog = false;
                 BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
@@ -71,38 +71,33 @@ namespace SimpleBackupConsole
             }
             DateTime startTime = DateTime.Now;
 
-            TextReporter.Report("Backup started at " + DateTime.Now.ToString(), TextReporter.TextType.Output);
+            TextReporter.Report("Backup started at " + DateTime.Now, TextReporter.TextType.Output);
             TextReporter.Report("Estimating copy size...", TextReporter.TextType.Output);
-            Dictionary<String, long> directorySizes = GetAllDirectorySizes(currentBackup);
-            _overallMax = directorySizes.Sum(x => x.Value);
+            List<Tuple<Tuple<Source, Destination>, long>> directorySizes = GetAllDirectorySizes(currentBackup);
+            _overallMax = directorySizes.Sum(x => x.Item2);
             foreach (var curPair in currentBackup.Pattern)
             {
-                TextReporter.Report("Starting backup of: " + curPair.Key.BackupSource, TextReporter.TextType.Output);
-                for (int index = 0; index < curPair.Value.Count; index++)
+                Source curSource = curPair.Key;
+                TextReporter.Report("Starting backup of: " + curSource.BackupSource, TextReporter.TextType.Output);
+                foreach (Destination curDestination in curPair.Value)
                 {
-                    string BaseTargetDir = curPair.Value[index].BackupDestination;
-                    if (BackupRunnerViewModel.Instance.StaggerBackup)
-                    {
-                        if (DateTime.Now.Day%2 == 0)
-                        {
-                            BaseTargetDir = BaseTargetDir + "_2";
-                        }
-                    }
                     try
                     {
                         Thread.Sleep(2000);
-                        if (!Directory.Exists(BaseTargetDir))
+                        if (!Directory.Exists(curDestination.BackupDestination))
                         {
-                            TextReporter.Report(Indentation + "Creating " + BaseTargetDir, TextReporter.TextType.Output);
-                            Directory.CreateDirectory(BaseTargetDir);
+                            TextReporter.Report(Indentation + "Creating " + curDestination.BackupDestination,
+                                TextReporter.TextType.Output);
+                            Directory.CreateDirectory(curDestination.BackupDestination);
                         }
-                        var currentSource = curPair.Key.BackupSource;
+                        string currentSource = curSource.BackupSource;
                         try
                         {
-                            _currentMax = directorySizes[currentSource];
+                            _currentMax =
+                                directorySizes.First(
+                                    x => x.Item1.Item1.Equals(curSource) && x.Item1.Item2.Equals(curDestination)).Item2;
                             _currentProgress = 0;
-                            string TargetDir = BaseTargetDir + "\\" + Path.GetFileName(currentSource);
-                            TargetDir = UniqueName(currentSource, TargetDir, currentBackup);
+                            string TargetDir = currentBackup.UniqueFinalPath(curSource, curDestination);
                             _tabIndex++;
                             TextReporter.Report(Indentation + "Copying " + currentSource + " to " + TargetDir,
                                 TextReporter.TextType.Output);
@@ -120,7 +115,8 @@ namespace SimpleBackupConsole
                         {
                             _tabIndex++;
                             TextReporter.Report(
-                                Indentation + "ERROR: Could not copy " + currentSource + " to " + BaseTargetDir + "\n" +
+                                Indentation + "ERROR: Could not copy " + currentSource + " to " +
+                                curDestination.BackupDestination + "\n" +
                                 Indentation + "Exception: " + e.Message, TextReporter.TextType.BackupError);
                             _tabIndex--;
                         }
@@ -138,42 +134,32 @@ namespace SimpleBackupConsole
                 TextReporter.Report("Shutting down...", TextReporter.TextType.Output);
             }
             DateTime endTime = DateTime.Now;
-            var backupDuration = Math.Round((endTime - startTime).TotalMinutes, 1);
-            TextReporter.Report("Backup ended at " + DateTime.Now.ToString(), TextReporter.TextType.Output);
+            double backupDuration = Math.Round((endTime - startTime).TotalMinutes, 1);
+            TextReporter.Report("Backup ended at " + DateTime.Now, TextReporter.TextType.Output);
             TextReporter.Report("Duration:  " + backupDuration + " minutes", TextReporter.TextType.Output);
             BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
         }
 
-        private String UniqueName(string currentSource, string currentTarget, BackupPattern currentBackupPattern)
+
+        private List<Tuple<Tuple<Source, Destination>, long>> GetAllDirectorySizes(BackupPattern currentBackup)
         {
-            var equalNames =
-                currentBackupPattern.Pattern.Keys.Where(
-                    x => Path.GetFileName(x.BackupSource).Equals(Path.GetFileName(currentTarget), StringComparison.InvariantCultureIgnoreCase)).ToList();
-            if (equalNames.Count > 1)
+            var info = new List<Tuple<Tuple<Source, Destination>, long>>();
+            foreach (var curPair in currentBackup.Pattern)
             {
-
-                var ret = Directory.GetParent(currentTarget) + "\\" + Directory.GetParent(currentSource).Name + "_" + Path.GetFileName(currentTarget);
-                return ret;
-            }
-            return currentTarget;
-        }
-
-
-
-        private Dictionary<string, long> GetAllDirectorySizes(BackupPattern currentBackup)
-        {
-            Dictionary<String, long> info = new Dictionary<string, long>();
-            foreach (var cur in currentBackup.Pattern.Keys)
-            {
-                var curSize = GetDirectorySize(new DirectoryInfo(cur.BackupSource));
-                info.Add(cur.BackupSource, curSize*currentBackup.Pattern[cur].Count);
+                long curSize = GetDirectorySize(new DirectoryInfo(curPair.Key.BackupSource));
+                foreach (Destination curDest in curPair.Value)
+                {
+                    info.Add(
+                        new Tuple<Tuple<Source, Destination>, long>(
+                            new Tuple<Source, Destination>(curPair.Key, curDest), curSize));
+                }
             }
             return info;
         }
 
         /// <summary>
-        /// Directory.delete stops if even a single targetFile is write-protected.
-        /// Use this helper method instead
+        ///     Directory.delete stops if even a single targetFile is write-protected.
+        ///     Use this helper method instead
         /// </summary>
         /// <param name="target_dir"></param>
         public static void DeleteDirectory(string target_dir)
@@ -190,7 +176,7 @@ namespace SimpleBackupConsole
                 }
                 catch (Exception)
                 {
-                    TextReporter.Report("Could not delete targetFile: "+file, TextReporter.TextType.BackupError);
+                    TextReporter.Report("Could not delete targetFile: " + file, TextReporter.TextType.BackupError);
                 }
             }
             foreach (string dir in dirs)
@@ -200,7 +186,6 @@ namespace SimpleBackupConsole
             try
             {
                 DeleteDirectoryCall(target_dir);
-                
             }
             catch (Exception)
             {
@@ -224,7 +209,7 @@ namespace SimpleBackupConsole
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would delete "+file, TextReporter.TextType.Output);
+                TextReporter.Report("Would delete " + file, TextReporter.TextType.Output);
             }
             else
             {
@@ -253,7 +238,7 @@ namespace SimpleBackupConsole
             // Get the subdirectories for the specified directory.
             var dir = new DirectoryInfo(backupHoldingDir);
             DirectoryInfo[] dirs = dir.GetDirectories();
-            
+
             // Get the files in the directory and copy them to the new location.
             FileInfo[] files = dir.GetFiles();
             foreach (FileInfo file in files)
@@ -281,7 +266,7 @@ namespace SimpleBackupConsole
                 string temppath = Path.Combine(originalDir, subdir.Name);
                 if (!Directory.Exists(temppath))
                 {
-                    TextReporter.Report(Indentation+"Removing " + subdir.FullName, TextReporter.TextType.ForLogOnly);
+                    TextReporter.Report(Indentation + "Removing " + subdir.FullName, TextReporter.TextType.ForLogOnly);
                     DeleteDirectory(subdir.FullName);
                 }
                 else
@@ -290,7 +275,6 @@ namespace SimpleBackupConsole
                 }
             }
         }
-
 
 
         private void RecursivelyCopyDir(string sourceDirName, string destDirName)
@@ -311,7 +295,8 @@ namespace SimpleBackupConsole
             {
                 try
                 {
-                    TextReporter.Report(Indentation+ "Creating directory " + destDirName, TextReporter.TextType.ForLogOnly);
+                    TextReporter.Report(Indentation + "Creating directory " + destDirName,
+                        TextReporter.TextType.ForLogOnly);
                     CreateDirectory(destDirName);
                 }
                 catch (Exception excep)
@@ -332,8 +317,8 @@ namespace SimpleBackupConsole
                     _currentProgress += file.Length;
                     _overallProgress += file.Length;
                     TextReporter.ReportProgressToUI(_currentProgress, _currentMax, _overallProgress, _overallMax);
-                    var copyReason = NeedToOverwrite(file, temppath);
-                    if(copyReason.Item1!=CopyReason.ShouldNotCopy)
+                    Tuple<CopyReason, Tuple<DateTime, DateTime>> copyReason = NeedToOverwrite(file, temppath);
+                    if (copyReason.Item1 != CopyReason.ShouldNotCopy)
                     {
                         String copyExplanation = "";
                         switch (copyReason.Item1)
@@ -346,7 +331,9 @@ namespace SimpleBackupConsole
                                 copyExplanation = "File did not exist in source";
                                 break;
                         }
-                        TextReporter.Report(Indentation + "Copying targetFile " + temppath+"\tExplanation: "+copyExplanation, TextReporter.TextType.ForLogOnly);
+                        TextReporter.Report(
+                            Indentation + "Copying targetFile " + temppath + "\tExplanation: " + copyExplanation,
+                            TextReporter.TextType.ForLogOnly);
                         FileCopy(file, temppath);
                     }
                 }
@@ -377,7 +364,8 @@ namespace SimpleBackupConsole
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would copy "+targetFile.FullName+" to "+destination, TextReporter.TextType.Output);
+                TextReporter.Report("Would copy " + targetFile.FullName + " to " + destination,
+                    TextReporter.TextType.Output);
             }
             else
             {
@@ -389,7 +377,7 @@ namespace SimpleBackupConsole
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would created "+destDirName, TextReporter.TextType.Output);
+                TextReporter.Report("Would created " + destDirName, TextReporter.TextType.Output);
             }
             else
             {
@@ -397,12 +385,9 @@ namespace SimpleBackupConsole
             }
         }
 
-        private enum CopyReason
-        {
-            ShouldNotCopy, DidNotExist, MoreRecent
-        }
-        /// <returns>Description of reason, followed by a tuple containing the time of the source targetFile and the time of the 
-        /// targetFile in the backup dir
+        /// <returns>
+        ///     Description of reason, followed by a tuple containing the time of the source targetFile and the time of the
+        ///     targetFile in the backup dir
         /// </returns>
         private Tuple<CopyReason, Tuple<DateTime, DateTime>> NeedToOverwrite(FileInfo file, string temppath)
         {
@@ -417,21 +402,28 @@ namespace SimpleBackupConsole
                 return new Tuple<CopyReason, Tuple<DateTime, DateTime>>(
                     CopyReason.MoreRecent, new Tuple<DateTime, DateTime>(file.LastWriteTime, existingfile.LastWriteTime));
             }
-            return new Tuple<CopyReason, Tuple<DateTime, DateTime>>(CopyReason.ShouldNotCopy, null) ;
+            return new Tuple<CopyReason, Tuple<DateTime, DateTime>>(CopyReason.ShouldNotCopy, null);
         }
 
         private bool AllTargetFilesExist(BackupPattern currentBackupPattern)
         {
-            foreach (var cur in currentBackupPattern.Pattern.Keys)
+            foreach (Source cur in currentBackupPattern.Pattern.Keys)
             {
                 if (!Directory.Exists(cur.BackupSource))
                 {
                     TextReporter.Report(Indentation + "Error: " + cur + " did not exist.",
-                                        TextReporter.TextType.BackupError);
+                        TextReporter.TextType.BackupError);
                     return false;
                 }
             }
             return true;
+        }
+
+        private enum CopyReason
+        {
+            ShouldNotCopy,
+            DidNotExist,
+            MoreRecent
         }
     }
 }
