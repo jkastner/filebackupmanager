@@ -99,6 +99,7 @@ namespace BackupUI
         {
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
+            SetUIToFinished();
             if (BackupRunnerViewModel.Instance.RunAutomatically)
             {
                 //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
@@ -107,6 +108,14 @@ namespace BackupUI
                     Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
                 }
             }
+        }
+
+        private void SetUIToFinished()
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Title = Title + "- Completed";
+            });
         }
 
         private void WriteLog()
