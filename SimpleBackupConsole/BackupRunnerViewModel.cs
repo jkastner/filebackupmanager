@@ -8,7 +8,6 @@ namespace SimpleBackupConsole
     public class BackupRunnerViewModel : INotifyPropertyChanged
     {
         private static BackupRunnerViewModel _instance;
-        private ObservableCollection<BackupPattern> _allBackupPatterns = new ObservableCollection<BackupPattern>();
         private BackupPattern _currentPattern;
         private bool _runAutomatically = true;
         private bool _shouldWriteLog = true;
@@ -18,12 +17,6 @@ namespace SimpleBackupConsole
 
         private BackupRunnerViewModel()
         {
-        }
-
-        public ObservableCollection<BackupPattern> AllBackupPatterns
-        {
-            get { return _allBackupPatterns; }
-            set { _allBackupPatterns = value; }
         }
 
         public BackupPattern CurrentBackupPattern
@@ -108,7 +101,7 @@ namespace SimpleBackupConsole
                     foreach (Destination curDestination in _currentPattern.Pattern[curSource])
                     {
                         String finalUnique = _currentPattern.UniqueFinalPath(curSource, curDestination);
-                        sb.Append("\n\t" + finalUnique);
+                        sb.Append("\n\tTo:  " + finalUnique);
                     }
                 }
 

@@ -8,25 +8,18 @@ namespace SimpleBackupConsole
     public class ConfigReader
     {
         public static bool ConfigError { get; set; }
+        private const string SourceIndicator = "source";
+        private const string DestinationIndicator = "destination";
 
         public static BackupPattern ReadBackup()
         {
             var bp = new BackupPattern("Main");
             DirectoryInfo baseDir = Directory.GetParent(Application.ExecutablePath);
-            string backupFile = baseDir + @"\Data\BackupTargets.txt";
-            string directoriesToHoldBackupsFile = baseDir + @"\Data\DirectoriesToHoldBackups.txt";
+            string backupPatternFile = baseDir + @"\Data\BackupPattern.txt";
             string configFile = baseDir + @"\Data\ConfigFile.txt";
-            var directoriesToBackup = new List<string>();
-            var directoriesToHoldBackups = new List<string>();
-            if (!File.Exists(backupFile))
+            if (!File.Exists(backupPatternFile))
             {
-                TextReporter.Report("Could not find config file - " + backupFile, TextReporter.TextType.InitialError);
-                ConfigError = true;
-            }
-            if (!File.Exists(directoriesToHoldBackupsFile))
-            {
-                TextReporter.Report("Could not find config file - " + directoriesToHoldBackupsFile,
-                    TextReporter.TextType.InitialError);
+                TextReporter.Report("Could not find config file - " + backupPatternFile, TextReporter.TextType.InitialError);
                 ConfigError = true;
             }
             if (!File.Exists(configFile))
@@ -34,36 +27,57 @@ namespace SimpleBackupConsole
                 TextReporter.Report("Could not find config file - " + configFile, TextReporter.TextType.InitialError);
                 ConfigError = true;
             }
-            else
+            if (ConfigError)
             {
-                string[] allTargets = File.ReadAllLines(backupFile);
-                foreach (string cur in allTargets)
+                return bp;
+            }
+            string[] allText = File.ReadAllLines(backupPatternFile);
+            String curSource = "";
+            foreach (var curPreTrim in allText)
+            {
+                var curLine = curPreTrim.Trim();
+                if (String.IsNullOrWhiteSpace(curLine))
                 {
-                    String curFix = cur.Trim();
-                    if (!String.IsNullOrEmpty(curFix))
-                    {
-                        directoriesToBackup.Add(curFix);
-                    }
+                    continue;
                 }
-                string[] lines = File.ReadAllLines(directoriesToHoldBackupsFile);
-                foreach (string cur in lines)
+                var curLineSplit = curLine.Split('\t');
+                if (curLineSplit.Length < 2
+                    ||
+                    String.IsNullOrWhiteSpace(curLineSplit[0])
+                    ||
+                    String.IsNullOrWhiteSpace(curLineSplit[1]))
                 {
-                    if (!String.IsNullOrWhiteSpace(cur))
+                    TextReporter.Report("Error reading backup pattern file - could not parse line: " + curLine,
+                        TextReporter.TextType.InitialError);
+                    ConfigError = true;
+                    break;
+                }
+                var curType = curLineSplit[0].Trim().ToLower();
+                var curFolder = curLineSplit[1].Trim();
+                if (curType.Contains(SourceIndicator))
+                {
+                    curSource = curFolder;
+                }
+                else if (curType.Contains(DestinationIndicator))
+                {
+                    if (String.IsNullOrWhiteSpace(curSource))
                     {
-                        directoriesToHoldBackups.Add(cur);
+                        TextReporter.Report(
+                            "Error reading backup pattern file - no source defined for: " + curFolder,
+                            TextReporter.TextType.InitialError);
+                        ConfigError = true;
+                        return bp;
+                    }
+                    else
+                    {
+                        bp.AddBackup(new Source(curSource), new Destination(curFolder));
                     }
                 }
                 string[] configFileLines = File.ReadAllLines(configFile);
                 ReadConfigfile(configFileLines);
                 BackupRunnerViewModel.Instance.OnBackupPatternDescriptionChanged(new EventArgs());
             }
-            foreach (string cursource in directoriesToBackup)
-            {
-                foreach (string curdest in directoriesToHoldBackups)
-                {
-                    bp.AddBackup(new Source(cursource), new Destination(curdest));
-                }
-            }
+
             return bp;
         }
 
