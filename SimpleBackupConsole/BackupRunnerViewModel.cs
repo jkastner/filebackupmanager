@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Text;
@@ -13,10 +14,11 @@ namespace SimpleBackupConsole
         private bool _shouldWriteLog = true;
         private bool _shutdownOnCompletion;
         private bool _staggerBackup = true;
-        private DayOfWeek _targetDay = DateTime.Now.DayOfWeek;
+        private HashSet<DayOfWeek> _targetDays = new HashSet<DayOfWeek>();
 
         private BackupRunnerViewModel()
         {
+            _targetDays.Add(DateTime.Now.DayOfWeek);
         }
 
         public BackupPattern CurrentBackupPattern
@@ -73,13 +75,13 @@ namespace SimpleBackupConsole
             }
         }
 
-        public DayOfWeek TargetDay
+        public HashSet<DayOfWeek> TargetDays
         {
-            get { return _targetDay; }
+            get { return _targetDays; }
             set
             {
-                _targetDay = value;
-                OnPropertyChanged("TargetDay");
+                _targetDays = value;
+                OnPropertyChanged("TargetDays");
             }
         }
 

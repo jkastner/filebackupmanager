@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace SimpleBackupConsole
@@ -95,15 +96,26 @@ namespace SimpleBackupConsole
             BackupRunnerViewModel.Instance.StaggerBackup = bool.Parse(configFileLines[2]);
             if (BackupRunnerViewModel.Instance.RunAutomatically)
             {
-                DayOfWeek targetDay = DateTime.Now.DayOfWeek;
-                bool parseSuccessfuly = Enum.TryParse(configFileLines[3], true, out targetDay);
-                if (!parseSuccessfuly)
+                var targetDaysInfo = configFileLines[3].Trim().Split(null);
+                bool shouldAddToday = false;
+                BackupRunnerViewModel.Instance.TargetDays.Clear();
+                foreach (var curDay in targetDaysInfo)
                 {
-                    BackupRunnerViewModel.Instance.TargetDay = DateTime.Now.DayOfWeek;
+                    DayOfWeek targetDay = DateTime.Now.DayOfWeek;
+                    bool parseSuccessfuly = Enum.TryParse(curDay, true, out targetDay);
+                    if (parseSuccessfuly)
+                    {
+                        BackupRunnerViewModel.Instance.TargetDays.Add(targetDay);
+                    }
+                    else
+                    {
+                        shouldAddToday = true;
+                    }
                 }
-                else
+
+                if (!targetDaysInfo.Any() || shouldAddToday)
                 {
-                    BackupRunnerViewModel.Instance.TargetDay = targetDay;
+                    BackupRunnerViewModel.Instance.TargetDays.Add(DateTime.Now.DayOfWeek);
                 }
             }
             if (BackupRunnerViewModel.Instance.StaggerBackup && DateTime.Now.Day%2 == 0)

@@ -61,3 +61,21 @@ C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\ob
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\obj\Debug\BackupSystem_MarkupCompile.lref
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\obj\Debug\SingleBackupPatternDisplay.baml
 C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\obj\Debug\SingleBackupPatternDisplay.g.cs
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\bin\Debug\BackupSystem.exe.config
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem.exe
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem.pdb
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\bin\Debug\BackupSystem.exe
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\bin\Debug\BackupSystem.pdb
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\bin\Debug\BackupSystemDLL.dll
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\bin\Debug\BackupSystemDLL.pdb
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupUI.csprojResolveAssemblyReference.cache
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\SingleBackupPatternDisplay.baml
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\MainWindow.g.cs
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\SingleBackupPatternDisplay.g.cs
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\App.g.cs
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem_MarkupCompile.cache
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem_MarkupCompile.lref
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\MainWindow.baml
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem.g.resources
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupUI.Properties.Resources.resources
+C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupUI.csproj.GenerateResource.Cache

@@ -49,11 +49,12 @@ namespace SimpleBackupConsole
 
         public void StartBackup(BackupPattern currentBackup)
         {
-            if (DateTime.Now.Date.DayOfWeek != BackupRunnerViewModel.Instance.TargetDay)
+            if (!BackupRunnerViewModel.Instance.TargetDays.Contains(DateTime.Now.Date.DayOfWeek))
             {
                 BackupRunnerViewModel.Instance.CloseUIOnCompleted = true;
+                string dayStrings = string.Join(",", BackupRunnerViewModel.Instance.TargetDays.ToArray());
                 TextReporter.Report(
-                    "Target day " + BackupRunnerViewModel.Instance.TargetDay + " did not match current day " +
+                    "Targets day " + dayStrings + " did not match current day " +
                     DateTime.Now.DayOfWeek, TextReporter.TextType.Output);
                 BackupRunnerViewModel.Instance.ShouldWriteLog = false;
                 BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
