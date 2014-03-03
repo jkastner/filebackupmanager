@@ -412,7 +412,7 @@ namespace SimpleBackupConsole
             {
                 if (!Directory.Exists(cur.BackupSource))
                 {
-                    TextReporter.Report(Indentation + "Error: " + cur + " did not exist.",
+                    TextReporter.Report(Indentation + "Error: " + cur.BackupSource + " did not exist.",
                         TextReporter.TextType.BackupError);
                     return false;
                 }
