@@ -41,6 +41,14 @@ namespace SimpleBackupConsole
                 {
                     continue;
                 }
+                if (curLine.Length > 0)
+                {
+                    //Comments marked by semicolon
+                    if (curLine[0] == ';')
+                    {
+                        continue;
+                    }
+                }
                 var curLineSplit = curLine.Split('\t');
                 if (curLineSplit.Length < 2
                     ||
