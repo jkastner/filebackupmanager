@@ -180,7 +180,9 @@ namespace BackupUI
 
         private void ReadBackupPattern()
         {
-            BackupRunnerViewModel.Instance.CurrentBackupPattern = ConfigReader.ReadBackup();
+            ConfigViewModel.Instance.ReadConfigData();
+            BackupRunnerViewModel.Instance.CurrentBackupPattern = BackupPatternReader.ReadBackup();
+
         }
 
         private void StartBackup_Button_Click(object sender, RoutedEventArgs e)
