@@ -57,6 +57,7 @@ namespace SimpleBackupConsole
                     "Targets day " + dayStrings + " did not match current day " +
                     DateTime.Now.DayOfWeek, TextReporter.TextType.Output);
                 BackupRunnerViewModel.Instance.ShouldWriteLog = false;
+                BackupRunnerViewModel.Instance.ShouldClose = true;
                 BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
                 return;
             }
@@ -71,11 +72,11 @@ namespace SimpleBackupConsole
                 return;
             }
             bool shouldStagger = false;
-            if (ConfigViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup && DateTime.Now.Day % 2 == 0)
+            if (BackupRunnerViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup && DateTime.Now.Day % 2 == 0)
             {
                 shouldStagger = true;
             }
-            else if (ConfigViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup)
+            else if (BackupRunnerViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup)
             {
                 shouldStagger = false;
             }

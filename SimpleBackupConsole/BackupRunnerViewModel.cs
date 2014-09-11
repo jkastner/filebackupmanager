@@ -11,6 +11,7 @@ namespace SimpleBackupConsole
         private static BackupRunnerViewModel _instance;
         private BackupPattern _currentPattern;
         private bool _shouldWriteLog = true;
+        private bool _shouldClose;
 
         private BackupRunnerViewModel()
         {
@@ -69,11 +70,26 @@ namespace SimpleBackupConsole
             }
         }
 
+        private bool _runAutomatically = false;
+        public bool RunAutomatically
+        {
+            get { return _runAutomatically; }
+            set
+            {
+                _runAutomatically = value;
+            }
+        }
 
         public bool ShouldWriteLog
         {
             get { return _shouldWriteLog; }
             set { _shouldWriteLog = value; }
+        }
+
+        public bool ShouldClose
+        {
+            get { return _shouldClose; }
+            set { _shouldClose = value; }
         }
 
 

@@ -112,7 +112,7 @@ namespace BackupUI
             {
                 Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
             }
-            else if (ConfigViewModel.Instance.CloseWindowOnCompletion)
+            else if (ConfigViewModel.Instance.CloseWindowOnCompletion || BackupRunnerViewModel.Instance.ShouldClose)
             {
                 Application.Current.Dispatcher.Invoke(() => { this.Close(); });
             }
@@ -181,7 +181,7 @@ namespace BackupUI
         private void ReadConfig(object sender, RoutedEventArgs e)
         {
             ReadBackupPattern();
-            if (ConfigViewModel.Instance.RunAutomatically)
+            if (BackupRunnerViewModel.Instance.RunAutomatically)
             {
                 StartBackup();
             }

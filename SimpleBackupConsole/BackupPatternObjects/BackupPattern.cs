@@ -58,7 +58,7 @@ namespace SimpleBackupConsole
             bool anyMatch = false;
             var allDestinations = new List<string>();
             String staggerString = "";
-            if (staggerBackup && ConfigViewModel.Instance.RunAutomatically)
+            if (staggerBackup && BackupRunnerViewModel.Instance.RunAutomatically)
             {
                 if (DateTime.Now.Day%2 != 0)
                 {

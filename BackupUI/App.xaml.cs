@@ -21,7 +21,7 @@ namespace BackupUI
             {
                 if (e.Args[0].ToLower().Contains("auto"))
                 {
-                    ConfigViewModel.Instance.AllowAutomaticRun();
+                    BackupRunnerViewModel.Instance.RunAutomatically = true;
                 }
             }
             wnd.Show();

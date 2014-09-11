@@ -79,21 +79,6 @@ namespace SimpleBackupConsole
             }
         }
 
-        public bool RunAutomatically
-        {
-            get { return _runAutomatically; }
-            private set
-            {
-                _runAutomatically = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public void AllowAutomaticRun()
-        {
-            _runAutomatically = true;
-        }
-
         protected override void UseCustomParser(PropertyInfo propertyInfo, string readValue)
         {
             if (propertyInfo.PropertyType == typeof (HashSet<DayOfWeek>))
@@ -104,7 +89,7 @@ namespace SimpleBackupConsole
                 {
                     Enum q;
                     DayOfWeek day;
-                    if (DayOfWeek.TryParse(readValue, out day))
+                    if (DayOfWeek.TryParse(cur, out day))
                     {
                         TargetDays.Add(day);
                     }
