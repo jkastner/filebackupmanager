@@ -50,7 +50,7 @@ namespace SimpleBackupConsole
                 {
                     TextReporter.Report("Error reading backup pattern file - could not parse line: " + curLine,
                         TextReporter.TextType.InitialError);
-                    ConfigViewModel.ConfigError = true;
+                    ReadError = true;
                     break;
                 }
                 var curType = curLineSplit[0].Trim().ToLower();
@@ -66,7 +66,7 @@ namespace SimpleBackupConsole
                         TextReporter.Report(
                             "Error reading backup pattern file - no source defined for: " + curFolder,
                             TextReporter.TextType.InitialError);
-                        ConfigViewModel.ConfigError = true;
+                        ReadError = true;
                         return bp;
                     }
                     else

@@ -37,6 +37,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Windows.Forms" />
@@ -53,8 +54,10 @@
     <Compile Include="BackupRunner.cs" />
     <Compile Include="BackupRunnerViewModel.cs" />
     <Compile Include="BackupPatternReader.cs" />
+    <Compile Include="BaseAppSettingsViewModel.cs" />
     <Compile Include="ConfigViewModel.cs" />
     <Compile Include="ProgressEvent.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TextEvent.cs" />
     <Compile Include="TextReporter.cs" />

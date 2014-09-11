@@ -107,14 +107,16 @@ namespace BackupUI
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
             SetUIToFinished();
-            if (ConfigViewModel.Instance.RunAutomatically)
+            //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
+            if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
             {
-                //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
-                if (BackupRunnerViewModel.Instance.CloseUIOnCompleted)
-                {
-                    Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
-                }
+                Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
             }
+            else if (ConfigViewModel.Instance.CloseWindowOnCompletion)
+            {
+                Application.Current.Dispatcher.Invoke(() => { this.Close(); });
+            }
+
         }
 
         private void SetUIToFinished()
@@ -187,7 +189,6 @@ namespace BackupUI
 
         private void ReadBackupPattern()
         {
-            ConfigViewModel.Instance.ReadConfigData();
             BackupRunnerViewModel.Instance.CurrentBackupPattern = BackupPatternReader.ReadBackup();
 
         }

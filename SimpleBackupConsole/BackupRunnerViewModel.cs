@@ -60,7 +60,7 @@ namespace SimpleBackupConsole
                     sb.Append("\nFrom: " + curSource.BackupSource);
                     foreach (Destination curDestination in _currentPattern.Pattern[curSource])
                     {
-                        String finalUnique = _currentPattern.UniqueFinalPath(curSource, curDestination);
+                        String finalUnique = _currentPattern.UniqueFinalPath(curSource, curDestination, ConfigViewModel.Instance.StaggerBackup);
                         sb.Append("\n\tTo:  " + finalUnique);
                     }
                 }

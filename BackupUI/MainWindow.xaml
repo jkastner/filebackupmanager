@@ -23,13 +23,16 @@
                              IsReadOnly="True"
                              BorderBrush="Black" BorderThickness="1" Name="BackupPatten_RichTextBox" />
             </TabItem>
-            <TabItem DataContext="{Binding ConfigViewModel}" IsSelected="True" Header="Config" x:Name="Config_TabItem" >
-                <CheckBox Margin="5,1,5,1" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
+            <TabItem DataContext="{Binding ConfigViewModel}" Header="Config" x:Name="Config_TabItem" >
+                <StackPanel>
+                    <CheckBox Margin="5" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
+                    <CheckBox Margin="5" Name="CloseWindow_CheckBox" IsChecked="{Binding CloseWindowOnCompletion}">Close window</CheckBox>
+                </StackPanel>
             </TabItem>
         </TabControl>
         <CheckBox  Grid.Row="0" Grid.Column="2"
                 DataContext="{Binding ConfigViewModel}"
-                Margin="5,1,5,1" Name="ShutDown_CheckBox" IsChecked="{Binding ShutdownOnCompletion}">Shutdown computer when finished</CheckBox>
+                Margin="5,1,5,1" Name="ShutDown_CheckBox" IsChecked="{Binding ShutdownComputerOnCompletion}">Shutdown computer when finished</CheckBox>
         <Button Margin="5,5,5,5" Height="Auto" FontSize="22"
                 Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Name="StartBackup_Button"
                 Click="StartBackup_Button_Click">

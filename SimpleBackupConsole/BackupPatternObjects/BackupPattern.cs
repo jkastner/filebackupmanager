@@ -52,13 +52,12 @@ namespace SimpleBackupConsole
             Pattern[source].Add(dest);
         }
 
-        public String UniqueFinalPath(Source source, Destination dest)
+        public String UniqueFinalPath(Source source, Destination dest, bool staggerBackup)
         {
             //was changed, new description
             bool anyMatch = false;
             var allDestinations = new List<string>();
             String staggerString = "";
-            bool staggerBackup = ConfigViewModel.Instance.StaggerBackup;
             if (staggerBackup && ConfigViewModel.Instance.RunAutomatically)
             {
                 if (DateTime.Now.Day%2 != 0)

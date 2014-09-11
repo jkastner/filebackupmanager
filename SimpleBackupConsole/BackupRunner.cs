@@ -70,6 +70,15 @@ namespace SimpleBackupConsole
                 BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
                 return;
             }
+            bool shouldStagger = false;
+            if (ConfigViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup && DateTime.Now.Day % 2 == 0)
+            {
+                shouldStagger = true;
+            }
+            else if (ConfigViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup)
+            {
+                shouldStagger = false;
+            }
             DateTime startTime = DateTime.Now;
 
             TextReporter.Report("Backup started at " + DateTime.Now, TextReporter.TextType.Output);
@@ -98,7 +107,7 @@ namespace SimpleBackupConsole
                                 directorySizes.First(
                                     x => x.Item1.Item1.Equals(curSource) && x.Item1.Item2.Equals(curDestination)).Item2;
                             _currentProgress = 0;
-                            string TargetDir = currentBackup.UniqueFinalPath(curSource, curDestination);
+                            string TargetDir = currentBackup.UniqueFinalPath(curSource, curDestination, shouldStagger);
                             _tabIndex++;
                             TextReporter.Report(Indentation + "Copying " + currentSource + " to " + TargetDir,
                                 TextReporter.TextType.Output);
@@ -129,7 +138,7 @@ namespace SimpleBackupConsole
                     _tabIndex--;
                 }
             }
-            if (ConfigViewModel.Instance.ShutdownOnCompletion)
+            if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
             {
                 BackupRunnerViewModel.Instance.OnShutdownRequested(new EventArgs());
                 TextReporter.Report("Shutting down...", TextReporter.TextType.Output);

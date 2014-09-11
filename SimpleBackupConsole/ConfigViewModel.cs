@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace SimpleBackupConsole
 {
-    public class ConfigViewModel : INotifyPropertyChanged
+    public class ConfigViewModel : BaseAppSettingsViewModel
     {
         private static ConfigViewModel _instance;
-
-        private bool _runAutomatically = true;
-        private bool _shutdownOnCompletion;
+        private bool _runAutomatically = false;
+        private bool _shutdownComputerOnCompletion;
         private bool _staggerBackup = true;
         private HashSet<DayOfWeek> _targetDays = new HashSet<DayOfWeek>();
+        private bool _closeWindowOnCompletion;
 
         private ConfigViewModel()
         {
-            _targetDays.Add(DateTime.Now.DayOfWeek);
-        }
 
-        public static bool ConfigError { get; set; }
+        }
 
         public static ConfigViewModel Instance
         {
@@ -47,15 +46,27 @@ namespace SimpleBackupConsole
         }
 
 
-        public bool ShutdownOnCompletion
+        public bool ShutdownComputerOnCompletion
         {
-            get { return _shutdownOnCompletion; }
+            get { return _shutdownComputerOnCompletion; }
             set
             {
-                _shutdownOnCompletion = value;
+                _shutdownComputerOnCompletion = value;
                 OnPropertyChanged();
             }
         }
+
+        public bool CloseWindowOnCompletion
+        {
+            get { return _closeWindowOnCompletion; }
+            set
+            {
+                if (value.Equals(_closeWindowOnCompletion)) return;
+                _closeWindowOnCompletion = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         public bool StaggerBackup
         {
@@ -71,78 +82,53 @@ namespace SimpleBackupConsole
         public bool RunAutomatically
         {
             get { return _runAutomatically; }
-            set
+            private set
             {
                 _runAutomatically = value;
                 OnPropertyChanged();
             }
         }
 
-        /*Config file format
-        * RunAutomatically
-        * ShutdownOnCompletion
-        * StaggerBackup
-        * TargetDay (irrelevant if the top is false)
-        */
+        public void AllowAutomaticRun()
+        {
+            _runAutomatically = true;
+        }
+
+        protected override void UseCustomParser(PropertyInfo propertyInfo, string readValue)
+        {
+            if (propertyInfo.PropertyType == typeof (HashSet<DayOfWeek>))
+            {
+                var set = readValue.Split(',');
+                TargetDays.Clear();
+                foreach (var cur in set)
+                {
+                    Enum q;
+                    DayOfWeek day;
+                    if (DayOfWeek.TryParse(readValue, out day))
+                    {
+                        TargetDays.Add(day);
+                    }
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public void ReadConfigData()
+        protected override HashSet<Type> DefineValidTypes()
         {
-            DirectoryInfo baseDir = Directory.GetParent(Application.ExecutablePath);
-            string configFile = baseDir + @"\Data\ConfigFile.txt";
-            if (!File.Exists(configFile))
-            {
-                TextReporter.Report("Could not find config file - " + configFile, TextReporter.TextType.InitialError);
-                ConfigError = true;
-            }
-            string[] configFileLines = File.ReadAllLines(configFile);
-            ReadConfigfile(configFileLines);
+            return new HashSet<Type>() { typeof(bool), typeof(String), typeof(HashSet<DayOfWeek>) };
         }
 
-        private void ReadConfigfile(string[] configFileLines)
+        protected override void LoadOverriddenValues()
         {
-            RunAutomatically = bool.Parse(configFileLines[0]);
-            ShutdownOnCompletion = bool.Parse(configFileLines[1]);
-            StaggerBackup = bool.Parse(configFileLines[2]);
-            if (RunAutomatically)
+            if (!TargetDays.Any())
             {
-                string[] targetDaysInfo = configFileLines[3].Trim().Split(null);
-                bool shouldAddToday = false;
-                TargetDays.Clear();
-                foreach (string curDay in targetDaysInfo)
-                {
-                    DayOfWeek targetDay = DateTime.Now.DayOfWeek;
-                    bool parseSuccessfuly = Enum.TryParse(curDay, true, out targetDay);
-                    if (parseSuccessfuly)
-                    {
-                        TargetDays.Add(targetDay);
-                    }
-                    else
-                    {
-                        shouldAddToday = true;
-                    }
-                }
-
-                if (!targetDaysInfo.Any() || shouldAddToday)
-                {
-                    TargetDays.Add(DateTime.Now.DayOfWeek);
-                }
-            }
-            if (StaggerBackup && DateTime.Now.Day%2 == 0)
-            {
-                StaggerBackup = true;
-            }
-            else if (StaggerBackup)
-            {
-                StaggerBackup = false;
+                TargetDays.Add(DateTime.Now.DayOfWeek);
             }
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
+
+       
+
+
     }
 }
