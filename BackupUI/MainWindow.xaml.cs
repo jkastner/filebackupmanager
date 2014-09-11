@@ -16,10 +16,16 @@ namespace BackupUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _currentDataContext = new MainViewModel();
+        public MainViewModel CurrentDataContext
+        {
+            get { return _currentDataContext; }
+            set { _currentDataContext = value; }
+        }
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = BackupRunnerViewModel.Instance;
             Loaded += ReadConfig;
             BackupRunnerViewModel.Instance.BackupPatternDescriptionChanged += BackupPattenDescriptionChanged;
             BackupRunnerViewModel.Instance.ShutdownRequested += ShutdownRequested;
@@ -65,6 +71,7 @@ namespace BackupUI
         }
 
         private Paragraph _richTextParagraph;
+
         private void ReportTextToUI(string newText, TextReporter.TextType theType)
         {
             try
@@ -100,7 +107,7 @@ namespace BackupUI
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
             SetUIToFinished();
-            if (BackupRunnerViewModel.Instance.RunAutomatically)
+            if (ConfigViewModel.Instance.RunAutomatically)
             {
                 //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
                 if (BackupRunnerViewModel.Instance.CloseUIOnCompleted)
@@ -172,7 +179,7 @@ namespace BackupUI
         private void ReadConfig(object sender, RoutedEventArgs e)
         {
             ReadBackupPattern();
-            if (BackupRunnerViewModel.Instance.RunAutomatically)
+            if (ConfigViewModel.Instance.RunAutomatically)
             {
                 StartBackup();
             }

@@ -79,3 +79,5 @@ C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\Backu
 C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupSystem.g.resources
 C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupUI.Properties.Resources.resources
 C:\Users\johnathan\Google Drive\Documents\VisualStudioProjects\FilesBackup\BackupUI\obj\Debug\BackupUI.csproj.GenerateResource.Cache
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\johnathan\Documents\Visual Studio 2012\Projects\FilesBackup\BackupUI\obj\Debug\App.baml

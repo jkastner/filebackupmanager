@@ -10,15 +10,11 @@ namespace SimpleBackupConsole
     {
         private static BackupRunnerViewModel _instance;
         private BackupPattern _currentPattern;
-        private bool _runAutomatically = true;
         private bool _shouldWriteLog = true;
-        private bool _shutdownOnCompletion;
-        private bool _staggerBackup = true;
-        private HashSet<DayOfWeek> _targetDays = new HashSet<DayOfWeek>();
 
         private BackupRunnerViewModel()
         {
-            _targetDays.Add(DateTime.Now.DayOfWeek);
+            
         }
 
         public BackupPattern CurrentBackupPattern
@@ -44,46 +40,8 @@ namespace SimpleBackupConsole
             }
         }
 
-        public bool ShutdownOnCompletion
-        {
-            get { return _shutdownOnCompletion; }
-            set
-            {
-                _shutdownOnCompletion = value;
-                OnPropertyChanged("ShutdownOnCompletion");
-            }
-        }
 
-        public bool StaggerBackup
-        {
-            get { return _staggerBackup; }
-            set
-            {
-                _staggerBackup = value;
-                OnPropertyChanged("StaggerBackup");
-                OnBackupPatternDescriptionChanged(new EventArgs());
-            }
-        }
 
-        public bool RunAutomatically
-        {
-            get { return _runAutomatically; }
-            set
-            {
-                _runAutomatically = value;
-                OnPropertyChanged("RunAutomatically");
-            }
-        }
-
-        public HashSet<DayOfWeek> TargetDays
-        {
-            get { return _targetDays; }
-            set
-            {
-                _targetDays = value;
-                OnPropertyChanged("TargetDays");
-            }
-        }
 
         public bool CloseUIOnCompleted { get; set; }
 

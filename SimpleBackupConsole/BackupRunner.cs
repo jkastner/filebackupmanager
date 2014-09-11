@@ -49,10 +49,10 @@ namespace SimpleBackupConsole
 
         public void StartBackup(BackupPattern currentBackup)
         {
-            if (!BackupRunnerViewModel.Instance.TargetDays.Contains(DateTime.Now.Date.DayOfWeek))
+            if (!ConfigViewModel.Instance.TargetDays.Contains(DateTime.Now.Date.DayOfWeek))
             {
                 BackupRunnerViewModel.Instance.CloseUIOnCompleted = true;
-                string dayStrings = string.Join(",", BackupRunnerViewModel.Instance.TargetDays.ToArray());
+                string dayStrings = string.Join(",", ConfigViewModel.Instance.TargetDays.ToArray());
                 TextReporter.Report(
                     "Targets day " + dayStrings + " did not match current day " +
                     DateTime.Now.DayOfWeek, TextReporter.TextType.Output);
@@ -129,7 +129,7 @@ namespace SimpleBackupConsole
                     _tabIndex--;
                 }
             }
-            if (BackupRunnerViewModel.Instance.ShutdownOnCompletion)
+            if (ConfigViewModel.Instance.ShutdownOnCompletion)
             {
                 BackupRunnerViewModel.Instance.OnShutdownRequested(new EventArgs());
                 TextReporter.Report("Shutting down...", TextReporter.TextType.Output);

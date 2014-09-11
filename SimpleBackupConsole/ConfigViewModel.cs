@@ -1,22 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 
 namespace SimpleBackupConsole
 {
-    public class ConfigViewModel
+    public class ConfigViewModel : INotifyPropertyChanged
     {
-        public static bool ConfigError { get; set; }
         private static ConfigViewModel _instance;
+
+        private bool _runAutomatically = true;
+        private bool _shutdownOnCompletion;
+        private bool _staggerBackup = true;
+        private HashSet<DayOfWeek> _targetDays = new HashSet<DayOfWeek>();
 
         private ConfigViewModel()
         {
-            
+            _targetDays.Add(DateTime.Now.DayOfWeek);
         }
+
+        public static bool ConfigError { get; set; }
+
         public static ConfigViewModel Instance
         {
             get
@@ -29,6 +36,56 @@ namespace SimpleBackupConsole
             }
         }
 
+        public HashSet<DayOfWeek> TargetDays
+        {
+            get { return _targetDays; }
+            set
+            {
+                _targetDays = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        public bool ShutdownOnCompletion
+        {
+            get { return _shutdownOnCompletion; }
+            set
+            {
+                _shutdownOnCompletion = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool StaggerBackup
+        {
+            get { return _staggerBackup; }
+            set
+            {
+                _staggerBackup = value;
+                OnPropertyChanged();
+                BackupRunnerViewModel.Instance.OnBackupPatternDescriptionChanged(new EventArgs());
+            }
+        }
+
+        public bool RunAutomatically
+        {
+            get { return _runAutomatically; }
+            set
+            {
+                _runAutomatically = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /*Config file format
+        * RunAutomatically
+        * ShutdownOnCompletion
+        * StaggerBackup
+        * TargetDay (irrelevant if the top is false)
+        */
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public void ReadConfigData()
         {
@@ -43,30 +100,23 @@ namespace SimpleBackupConsole
             ReadConfigfile(configFileLines);
         }
 
-
-        /*Config file format
-        * RunAutomatically
-        * ShutdownOnCompletion
-        * StaggerBackup
-        * TargetDay (irrelevant if the top is false)
-        */
-        private static void ReadConfigfile(string[] configFileLines)
+        private void ReadConfigfile(string[] configFileLines)
         {
-            BackupRunnerViewModel.Instance.RunAutomatically = bool.Parse(configFileLines[0]);
-            BackupRunnerViewModel.Instance.ShutdownOnCompletion = bool.Parse(configFileLines[1]);
-            BackupRunnerViewModel.Instance.StaggerBackup = bool.Parse(configFileLines[2]);
-            if (BackupRunnerViewModel.Instance.RunAutomatically)
+            RunAutomatically = bool.Parse(configFileLines[0]);
+            ShutdownOnCompletion = bool.Parse(configFileLines[1]);
+            StaggerBackup = bool.Parse(configFileLines[2]);
+            if (RunAutomatically)
             {
-                var targetDaysInfo = configFileLines[3].Trim().Split(null);
+                string[] targetDaysInfo = configFileLines[3].Trim().Split(null);
                 bool shouldAddToday = false;
-                BackupRunnerViewModel.Instance.TargetDays.Clear();
-                foreach (var curDay in targetDaysInfo)
+                TargetDays.Clear();
+                foreach (string curDay in targetDaysInfo)
                 {
                     DayOfWeek targetDay = DateTime.Now.DayOfWeek;
                     bool parseSuccessfuly = Enum.TryParse(curDay, true, out targetDay);
                     if (parseSuccessfuly)
                     {
-                        BackupRunnerViewModel.Instance.TargetDays.Add(targetDay);
+                        TargetDays.Add(targetDay);
                     }
                     else
                     {
@@ -76,17 +126,23 @@ namespace SimpleBackupConsole
 
                 if (!targetDaysInfo.Any() || shouldAddToday)
                 {
-                    BackupRunnerViewModel.Instance.TargetDays.Add(DateTime.Now.DayOfWeek);
+                    TargetDays.Add(DateTime.Now.DayOfWeek);
                 }
             }
-            if (BackupRunnerViewModel.Instance.StaggerBackup && DateTime.Now.Day%2 == 0)
+            if (StaggerBackup && DateTime.Now.Day%2 == 0)
             {
-                BackupRunnerViewModel.Instance.StaggerBackup = true;
+                StaggerBackup = true;
             }
-            else if (BackupRunnerViewModel.Instance.StaggerBackup)
+            else if (StaggerBackup)
             {
-                BackupRunnerViewModel.Instance.StaggerBackup = false;
+                StaggerBackup = false;
             }
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
