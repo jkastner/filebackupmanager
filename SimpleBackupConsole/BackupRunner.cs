@@ -49,7 +49,8 @@ namespace SimpleBackupConsole
 
         public void StartBackup(BackupPattern currentBackup)
         {
-            if (!ConfigViewModel.Instance.TargetDays.Contains(DateTime.Now.Date.DayOfWeek))
+            if (!ConfigViewModel.Instance.TargetDays.Contains(DateTime.Now.Date.DayOfWeek)
+                &&BackupRunnerViewModel.Instance.RunAutomatically)
             {
                 BackupRunnerViewModel.Instance.CloseUIOnCompleted = true;
                 string dayStrings = string.Join(",", ConfigViewModel.Instance.TargetDays.ToArray());
