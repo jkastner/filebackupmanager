@@ -10,7 +10,6 @@ namespace SimpleBackupConsole
     {
         private static ConfigViewModel _instance;
         private bool _closeWindowOnCompletion;
-        private bool _runAutomatically = false;
         private bool _shutdownComputerOnCompletion;
         private bool _staggerBackup = true;
         private HashSet<DayOfWeek> _targetDays = new HashSet<DayOfWeek>();
@@ -21,6 +20,7 @@ namespace SimpleBackupConsole
         private bool _thursdayChecked;
         private bool _fridayChecked;
         private bool _saturdayChecked;
+        private string _versionNumber = "Version 2.1";
 
         private ConfigViewModel()
         {
@@ -209,6 +209,17 @@ namespace SimpleBackupConsole
             ThursdayChecked = set.Contains(DayOfWeek.Thursday);
             FridayChecked = set.Contains(DayOfWeek.Friday);
             SaturdayChecked = set.Contains(DayOfWeek.Saturday);
+        }
+
+        public string VersionNumber
+        {
+            get { return _versionNumber; }
+            set
+            {
+                if (value == _versionNumber) return;
+                _versionNumber = value;
+                OnPropertyChanged();
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -24,11 +24,18 @@
                              BorderBrush="Black" BorderThickness="1" Name="BackupPatten_RichTextBox" />
             </TabItem>
             <TabItem DataContext="{Binding ConfigViewModel}" Header="Config" x:Name="Config_TabItem" >
-                <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
+                    </Grid.RowDefinitions>
                     <CheckBox Margin="5" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
-                    <CheckBox Margin="5" Name="CloseWindow_CheckBox" IsChecked="{Binding CloseWindowOnCompletion}">Close window</CheckBox>
-                    <Label>Auto Backup Days:</Label>
-                    <DockPanel Margin="5">
+                    <CheckBox Margin="5" Grid.Row="1" Name="CloseWindow_CheckBox" IsChecked="{Binding CloseWindowOnCompletion}">Close window</CheckBox>
+                    <Label Grid.Row="2">Auto Backup Days:</Label>
+                    <DockPanel Margin="5" Grid.Row="3">
                         <Button Margin="2" Click="ToggleDays_Clicked" ToolTip="Clear or set all checked days">Toggle All</Button>
                         <CheckBox Margin="2" IsChecked="{Binding SundayChecked}">Sunday</CheckBox>
                         <CheckBox Margin="2" IsChecked="{Binding MondayChecked}">Monday</CheckBox>
@@ -39,7 +46,8 @@
                         <CheckBox Margin="2" IsChecked="{Binding SaturdayChecked}">Saturday</CheckBox>
                         
                     </DockPanel>
-                </StackPanel>
+                    <TextBlock Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="{Binding VersionNumber}"></TextBlock>
+                </Grid>
             </TabItem>
         </TabControl>
         <CheckBox  Grid.Row="0" Grid.Column="2"
