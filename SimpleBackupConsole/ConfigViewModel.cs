@@ -8,6 +8,7 @@ namespace SimpleBackupConsole
 {
     public class ConfigViewModel : BaseAppSettingsViewModel
     {
+
         private static ConfigViewModel _instance;
         private bool _closeWindowOnCompletion;
         private bool _shutdownComputerOnCompletion;

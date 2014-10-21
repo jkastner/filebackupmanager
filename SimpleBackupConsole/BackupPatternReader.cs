@@ -16,8 +16,8 @@ namespace SimpleBackupConsole
         public static BackupPattern ReadBackup()
         {
             var bp = new BackupPattern("Main");
-            DirectoryInfo baseDir = Directory.GetParent(Application.ExecutablePath);
-            string backupPatternFile = baseDir + @"\Data\BackupPattern.txt";
+
+            string backupPatternFile = Path.Combine(PathConstants.CurrentDirectory, @"Data\BackupPattern.txt");
             
             if (!File.Exists(backupPatternFile))
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -107,6 +108,7 @@ namespace BackupUI
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
             SetUIToFinished();
+            
             //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
             if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
             {
@@ -136,16 +138,17 @@ namespace BackupUI
             string fileName = DateTime.Now.Month + "_" + DateTime.Now.Day + "_" + DateTime.Now.Year;
             String finalName = fileName;
             int curAttempt = 1;
-            String dir = @"BackupLogs\";
-            while (File.Exists(dir + finalName + ".txt"))
+            String dir = Path.Combine(PathConstants.CurrentDirectory, "BackupLogs");
+            while (File.Exists(  Path.Combine(dir, finalName + ".txt")))
             {
                 finalName = fileName + "_" + curAttempt;
                 curAttempt++;
             }
-            finalName = finalName + ".txt";
+            finalName = Path.Combine(dir, finalName + ".txt");
+
             String curText = GetMainText();
             curText = curText + "\n" + _activityLog.ToString();
-            File.WriteAllText(dir + finalName, curText);
+            File.WriteAllText(finalName, curText);
         }
         private string GetMainText()
         {
@@ -186,6 +189,7 @@ namespace BackupUI
                 StartBackup();
             }
         }
+        
 
         private void ReadBackupPattern()
         {
