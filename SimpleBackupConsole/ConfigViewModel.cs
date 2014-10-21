@@ -90,7 +90,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_sundayChecked)) return;
                 _sundayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Sunday);
             }
         }
 
@@ -102,7 +102,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_mondayChecked)) return;
                 _mondayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Monday);
             }
         }
 
@@ -114,7 +114,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_tuesdayChecked)) return;
                 _tuesdayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Tuesday);
             }
         }
 
@@ -126,7 +126,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_wednesdayChecked)) return;
                 _wednesdayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Wednesday);
             }
         }
 
@@ -138,7 +138,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_thursdayChecked)) return;
                 _thursdayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Thursday);
             }
         }
 
@@ -150,7 +150,7 @@ namespace SimpleBackupConsole
                 if (value.Equals(_fridayChecked)) return;
                 _fridayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Friday);
             }
         }
 
@@ -162,41 +162,22 @@ namespace SimpleBackupConsole
                 if (value.Equals(_saturdayChecked)) return;
                 _saturdayChecked = value;
                 OnPropertyChanged();
-                SetupDays();
+                ChangeTargetDaysByBool(value, DayOfWeek.Saturday);
+            
             }
         }
 
-        private void SetupDays()
+        private void ChangeTargetDaysByBool(bool newVal, DayOfWeek day)
         {
-            TargetDays.Clear();
-            if (SundayChecked)
+            if (newVal)
             {
-                TargetDays.Add(DayOfWeek.Sunday);
+                TargetDays.Add(day);
             }
-            if (MondayChecked)
+            else
             {
-                TargetDays.Add(DayOfWeek.Monday);
+                TargetDays.Remove(day);
             }
-            if (TuesdayChecked)
-            {
-                TargetDays.Add(DayOfWeek.Tuesday);
-            }
-            if (WednesdayChecked)
-            {
-                TargetDays.Add(DayOfWeek.Wednesday);
-            }
-            if (ThursdayChecked)
-            {
-                TargetDays.Add(DayOfWeek.Thursday);
-            }
-            if (FridayChecked)
-            {
-                TargetDays.Add(DayOfWeek.Friday);
-            }
-            if (SaturdayChecked)
-            {
-                TargetDays.Add(DayOfWeek.Saturday);
-            }
+
         }
 
         protected override void UseCustomParser(PropertyInfo propertyInfo, string readValue)
@@ -214,21 +195,20 @@ namespace SimpleBackupConsole
                         TargetDays.Add(day);
                     }
                 }
-                if (TargetDays.Contains(DayOfWeek.Sunday))
-                    SundayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Monday))
-                    MondayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Tuesday))
-                    TuesdayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Wednesday))
-                    WednesdayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Thursday))
-                    ThursdayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Friday))
-                    FridayChecked = true;
-                if (TargetDays.Contains(DayOfWeek.Saturday))
-                    SaturdayChecked = true;
+                SetCheckboxesBySet(TargetDays);
+
             }
+        }
+
+        private void SetCheckboxesBySet(HashSet<DayOfWeek> set)
+        {
+            SundayChecked = set.Contains(DayOfWeek.Sunday);
+            MondayChecked = set.Contains(DayOfWeek.Monday);
+            TuesdayChecked = set.Contains(DayOfWeek.Tuesday);
+            WednesdayChecked = set.Contains(DayOfWeek.Wednesday);
+            ThursdayChecked = set.Contains(DayOfWeek.Thursday);
+            FridayChecked = set.Contains(DayOfWeek.Friday);
+            SaturdayChecked = set.Contains(DayOfWeek.Saturday);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -240,9 +220,24 @@ namespace SimpleBackupConsole
 
         protected override void LoadOverriddenValues()
         {
-            if (!TargetDays.Any())
+        }
+
+        public void ToggleAllDays()
+        {
+            if (TargetDays.Any())
             {
-                TargetDays.Add(DateTime.Now.DayOfWeek);
+                TargetDays.Clear();
+                SetCheckboxesBySet(TargetDays);
+            }
+            else
+            {
+                SundayChecked = true;
+                MondayChecked = true;
+                TuesdayChecked = true;
+                WednesdayChecked = true;
+                ThursdayChecked = true;
+                FridayChecked = true;
+                SaturdayChecked = true;
             }
         }
     }

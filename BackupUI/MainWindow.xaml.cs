@@ -206,5 +206,10 @@ namespace BackupUI
             var t = new Task(() => BackupRunner.Instance.StartBackup(BackupRunnerViewModel.Instance.CurrentBackupPattern));
             t.Start();
         }
+
+        private void ToggleDays_Clicked(object sender, RoutedEventArgs e)
+        {
+            ConfigViewModel.Instance.ToggleAllDays();
+        }
     }
 }
