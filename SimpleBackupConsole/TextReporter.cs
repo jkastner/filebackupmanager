@@ -45,7 +45,10 @@ namespace SimpleBackupConsole
 
         public static void ReportProgressToUI(long currentProgress, long currentMax, long overallProgress, long overallMax)
         {
-            OnReportProgress(new ProgressEvent(currentProgress, currentMax, overallProgress, overallMax));
+            if (!BackupRunnerViewModel.Instance.RunAutomatically)
+            {
+                OnReportProgress(new ProgressEvent(currentProgress, currentMax, overallProgress, overallMax));
+            }
         }
 
         public static event EventHandler ReportProgress;

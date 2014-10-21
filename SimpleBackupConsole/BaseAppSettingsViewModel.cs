@@ -16,6 +16,7 @@ namespace SimpleBackupConsole
     {
         private readonly Configuration _configuration;
         private HashSet<Type> _validTypes;
+        private bool _yay;
 
         internal BaseAppSettingsViewModel()
         {
@@ -25,7 +26,6 @@ namespace SimpleBackupConsole
             LoadOverriddenValues();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
         protected abstract HashSet<Type> DefineValidTypes();
 
         protected abstract void LoadOverriddenValues();
@@ -133,6 +133,9 @@ namespace SimpleBackupConsole
         {
             SaveChanges();
         }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

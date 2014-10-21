@@ -27,6 +27,16 @@
                 <StackPanel>
                     <CheckBox Margin="5" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
                     <CheckBox Margin="5" Name="CloseWindow_CheckBox" IsChecked="{Binding CloseWindowOnCompletion}">Close window</CheckBox>
+                    <DockPanel Margin="5">
+                        <CheckBox Margin="2" IsChecked="{Binding SundayChecked}">Sunday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding MondayChecked}">Monday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding TuesdayChecked}">Tuesday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding WednesdayChecked}">Wednesday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding ThursdayChecked}">Thursday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding FridayChecked}">Friday</CheckBox>
+                        <CheckBox Margin="2" IsChecked="{Binding SaturdayChecked}">Saturday</CheckBox>
+                        
+                    </DockPanel>
                 </StackPanel>
             </TabItem>
         </TabControl>
