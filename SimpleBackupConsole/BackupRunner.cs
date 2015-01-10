@@ -73,11 +73,11 @@ namespace SimpleBackupConsole
                 return;
             }
             bool shouldStagger = false;
-            if (BackupRunnerViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup && DateTime.Now.Day % 2 == 0)
+            if (ConfigViewModel.Instance.StaggerBackup && DateTime.Now.Day % 2 == 0)
             {
                 shouldStagger = true;
             }
-            else if (BackupRunnerViewModel.Instance.RunAutomatically && ConfigViewModel.Instance.StaggerBackup)
+            else if (ConfigViewModel.Instance.StaggerBackup)
             {
                 shouldStagger = false;
             }
