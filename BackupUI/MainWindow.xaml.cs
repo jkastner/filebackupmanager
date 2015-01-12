@@ -101,7 +101,7 @@ namespace BackupUI
             }
         }
 
-        private bool _shutDownCancelRequested = true;
+        private bool _shutDownCancelRequested = false;
         private void BackupCompleted(object sender, EventArgs e)
         {
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
@@ -122,7 +122,7 @@ namespace BackupUI
                 }
                 if (dialogResult == MessageBoxResult.Yes)
                 {
-                    ShutDown();
+                    ShutDownComputer();
                 }
             }
             //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
@@ -136,13 +136,17 @@ namespace BackupUI
         {
             if (!_shutDownCancelRequested)
             {
-                ShutDown();
+                ShutDownComputer();
             }
         }
 
-        private void ShutDown()
+        private void ShutDownComputer()
         {
-            Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                Process.Start("shutdown", "/s /t 0");
+                Close();
+            });
         }
 
         private void SetUIToFinished()
