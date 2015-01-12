@@ -30,6 +30,7 @@
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
+                        <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <CheckBox Margin="5" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
@@ -46,7 +47,8 @@
                         <CheckBox Margin="2" IsChecked="{Binding SaturdayChecked}">Saturday</CheckBox>
                         
                     </DockPanel>
-                    <TextBlock Grid.Row="4" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.4"></TextBlock>
+                    <CheckBox Margin="5" Grid.Row="4" IsChecked="{Binding CalculateCopyTime}">Calculate copy time</CheckBox>
+                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.6"></TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>

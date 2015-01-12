@@ -21,6 +21,7 @@ namespace SimpleBackupConsole
         private bool _thursdayChecked;
         private bool _fridayChecked;
         private bool _saturdayChecked;
+        
 
         private ConfigViewModel()
         {
@@ -166,6 +167,20 @@ namespace SimpleBackupConsole
             
             }
         }
+
+        private bool _calculateCopyTime = true;
+
+        public bool CalculateCopyTime
+        {
+            get { return _calculateCopyTime; }
+            set
+            {
+                _calculateCopyTime = value;
+                OnPropertyChanged();
+            }
+        }
+        
+
 
         private void ChangeTargetDaysByBool(bool newVal, DayOfWeek day)
         {

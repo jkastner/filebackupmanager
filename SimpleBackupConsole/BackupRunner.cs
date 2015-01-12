@@ -84,7 +84,14 @@ namespace SimpleBackupConsole
             DateTime startTime = DateTime.Now;
 
             TextReporter.Report("Backup started at " + DateTime.Now, TextReporter.TextType.Output);
-            TextReporter.Report("Estimating copy size...", TextReporter.TextType.Output);
+            if (ConfigViewModel.Instance.CalculateCopyTime)
+            {
+                TextReporter.Report("Estimating copy size...", TextReporter.TextType.Output);
+            }
+            else
+            {
+                TextReporter.Report("Skipping copy size estimation...", TextReporter.TextType.Output);
+            }
             List<Tuple<Tuple<Source, Destination>, long>> directorySizes = GetAllDirectorySizes(currentBackup);
             _overallMax = directorySizes.Sum(x => x.Item2);
             foreach (var curPair in currentBackup.Pattern)
@@ -105,9 +112,13 @@ namespace SimpleBackupConsole
                         string currentSource = curSource.BackupSource;
                         try
                         {
-                            _currentMax =
-                                directorySizes.First(
-                                    x => x.Item1.Item1.Equals(curSource) && x.Item1.Item2.Equals(curDestination)).Item2;
+                            if (directorySizes.Any())
+                            {
+                                _currentMax =
+                                    directorySizes.First(
+                                        x => x.Item1.Item1.Equals(curSource) && x.Item1.Item2.Equals(curDestination))
+                                        .Item2;
+                            }
                             _currentProgress = 0;
                             string TargetDir = currentBackup.UniqueFinalPath(curSource, curDestination, shouldStagger);
                             _tabIndex++;
@@ -156,14 +167,17 @@ namespace SimpleBackupConsole
         private List<Tuple<Tuple<Source, Destination>, long>> GetAllDirectorySizes(BackupPattern currentBackup)
         {
             var info = new List<Tuple<Tuple<Source, Destination>, long>>();
-            foreach (var curPair in currentBackup.Pattern)
+            if (ConfigViewModel.Instance.CalculateCopyTime)
             {
-                long curSize = GetDirectorySize(new DirectoryInfo(curPair.Key.BackupSource));
-                foreach (Destination curDest in curPair.Value)
+                foreach (var curPair in currentBackup.Pattern)
                 {
-                    info.Add(
-                        new Tuple<Tuple<Source, Destination>, long>(
-                            new Tuple<Source, Destination>(curPair.Key, curDest), curSize));
+                    long curSize = GetDirectorySize(new DirectoryInfo(curPair.Key.BackupSource));
+                    foreach (Destination curDest in curPair.Value)
+                    {
+                        info.Add(
+                            new Tuple<Tuple<Source, Destination>, long>(
+                                new Tuple<Source, Destination>(curPair.Key, curDest), curSize));
+                    }
                 }
             }
             return info;
