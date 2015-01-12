@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using SimpleBackupConsole;
 using System.Windows.Documents;
 using System.Windows.Media;
+using System.Windows.Threading;
+using SimpleBackupConsole;
 
 namespace BackupUI
 {
@@ -17,24 +17,26 @@ namespace BackupUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly StringBuilder _activityLog = new StringBuilder();
+        private readonly Paragraph _richTextParagraph;
         private MainViewModel _currentDataContext = new MainViewModel();
-        public MainViewModel CurrentDataContext
-        {
-            get { return _currentDataContext; }
-            set { _currentDataContext = value; }
-        }
 
         public MainWindow()
         {
             InitializeComponent();
             Loaded += ReadConfig;
             BackupRunnerViewModel.Instance.BackupPatternDescriptionChanged += BackupPattenDescriptionChanged;
-            BackupRunnerViewModel.Instance.ShutdownRequested += ShutdownRequested;
             BackupRunnerViewModel.Instance.BackupCompleted += BackupCompleted;
             TextReporter.ReportText += TextReported;
             TextReporter.ReportProgress += ProgressReported;
-            this._richTextParagraph = new Paragraph();
+            _richTextParagraph = new Paragraph();
             BackupPatten_RichTextBox.Document = new FlowDocument(_richTextParagraph);
+        }
+
+        public MainViewModel CurrentDataContext
+        {
+            get { return _currentDataContext; }
+            set { _currentDataContext = value; }
         }
 
         private void ProgressReported(object sender, EventArgs e)
@@ -47,16 +49,15 @@ namespace BackupUI
         {
             Application.Current.Dispatcher.Invoke(
                 () =>
-                    {
-                        CurrentDirectoryFilesCopied_ProgressBar.Value= currentProgress;
-                        CurrentDirectoryFilesCopied_ProgressBar.Maximum = currentMax;
-                        AllFilesCopied_ProgressBar.Maximum = overallMax;
-                        AllFilesCopied_ProgressBar.Value = overallProgress;
-                    });
+                {
+                    CurrentDirectoryFilesCopied_ProgressBar.Value = currentProgress;
+                    CurrentDirectoryFilesCopied_ProgressBar.Maximum = currentMax;
+                    AllFilesCopied_ProgressBar.Maximum = overallMax;
+                    AllFilesCopied_ProgressBar.Value = overallProgress;
+                });
         }
 
 
-        StringBuilder _activityLog = new StringBuilder();
         private void TextReported(object sender, EventArgs e)
         {
             var text = e as TextEvent;
@@ -71,14 +72,12 @@ namespace BackupUI
             }
         }
 
-        private Paragraph _richTextParagraph;
-
         private void ReportTextToUI(string newText, TextReporter.TextType theType)
         {
             try
             {
-                var displayBrush = Brushes.Black;
-                switch(theType)
+                SolidColorBrush displayBrush = Brushes.Black;
+                switch (theType)
                 {
                     case TextReporter.TextType.BackupError:
                         displayBrush = Brushes.Red;
@@ -86,12 +85,11 @@ namespace BackupUI
                     case TextReporter.TextType.Output:
                         displayBrush = Brushes.Black;
                         break;
-
                 }
                 Application.Current.Dispatcher.Invoke(
-                    () => 
+                    () =>
                     {
-                        _richTextParagraph.Inlines.Add(new Run(newText+"\n")
+                        _richTextParagraph.Inlines.Add(new Run(newText + "\n")
                         {
                             Foreground = displayBrush,
                         });
@@ -103,30 +101,53 @@ namespace BackupUI
             }
         }
 
+        private bool _shutDownCancelRequested = true;
         private void BackupCompleted(object sender, EventArgs e)
         {
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
             SetUIToFinished();
-            
-            //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
+
             if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
             {
-                Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
+                DispatcherTimer shutDownWarning = new DispatcherTimer();
+                shutDownWarning.Interval = TimeSpan.FromSeconds(15);
+                shutDownWarning.Tick += ShutDownWarningOnTick;
+                shutDownWarning.Start();
+                MessageBoxResult dialogResult = MessageBox.Show("Proceed with shut down?\n(Press NO to keep computer on)", "Shut down confirmation", MessageBoxButton.YesNo);
+                if (dialogResult == MessageBoxResult.No)
+                {
+                    _shutDownCancelRequested = true;
+                    ReportTextToUI("\n\nShutdown canceled.", TextReporter.TextType.Output);
+                }
+                if (dialogResult == MessageBoxResult.Yes)
+                {
+                    ShutDown();
+                }
             }
+            //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
             else if (ConfigViewModel.Instance.CloseWindowOnCompletion || BackupRunnerViewModel.Instance.ShouldClose)
             {
-                Application.Current.Dispatcher.Invoke(() => { this.Close(); });
+                Application.Current.Dispatcher.Invoke(() => { Close(); });
             }
+        }
 
+        private void ShutDownWarningOnTick(object sender, EventArgs eventArgs)
+        {
+            if (!_shutDownCancelRequested)
+            {
+                ShutDown();
+            }
+        }
+
+        private void ShutDown()
+        {
+            Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
         }
 
         private void SetUIToFinished()
         {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                Title = Title + "- Completed";
-            });
+            Application.Current.Dispatcher.Invoke(() => { Title = Title + "- Completed"; });
         }
 
         private void WriteLog()
@@ -139,7 +160,7 @@ namespace BackupUI
             String finalName = fileName;
             int curAttempt = 1;
             String dir = Path.Combine(PathConstants.CurrentDirectory, "BackupLogs");
-            while (File.Exists(  Path.Combine(dir, finalName + ".txt")))
+            while (File.Exists(Path.Combine(dir, finalName + ".txt")))
             {
                 finalName = fileName + "_" + curAttempt;
                 curAttempt++;
@@ -147,26 +168,22 @@ namespace BackupUI
             finalName = Path.Combine(dir, finalName + ".txt");
 
             String curText = GetMainText();
-            curText = curText + "\n" + _activityLog.ToString();
+            curText = curText + "\n" + _activityLog;
             File.WriteAllText(finalName, curText);
         }
+
         private string GetMainText()
         {
             String ans = "";
             Application.Current.Dispatcher.Invoke(() =>
             {
-                TextRange textRange = new TextRange(
-                BackupPatten_RichTextBox.Document.ContentStart,
-                BackupPatten_RichTextBox.Document.ContentEnd
-            );
+                var textRange = new TextRange(
+                    BackupPatten_RichTextBox.Document.ContentStart,
+                    BackupPatten_RichTextBox.Document.ContentEnd
+                    );
                 ans = textRange.Text;
             });
             return ans;
-        }
-
-        private void ShutdownRequested(object sender, EventArgs e)
-        {
-            Process.Start("shutdown", "/s /t 0");
         }
 
         private void BackupPattenDescriptionChanged(object sender, EventArgs e)
@@ -189,12 +206,11 @@ namespace BackupUI
                 StartBackup();
             }
         }
-        
+
 
         private void ReadBackupPattern()
         {
             BackupRunnerViewModel.Instance.CurrentBackupPattern = BackupPatternReader.ReadBackup();
-
         }
 
         private void StartBackup_Button_Click(object sender, RoutedEventArgs e)
@@ -208,7 +224,8 @@ namespace BackupUI
             StaggerBackup_CheckBox.IsEnabled = false;
             CalculateCopyTime_CheckBox.IsEnabled = false;
             ReportTextToUI("\n\n-----------------------\nStarting backup.....", TextReporter.TextType.Output);
-            var t = new Task(() => BackupRunner.Instance.StartBackup(BackupRunnerViewModel.Instance.CurrentBackupPattern));
+            var t =
+                new Task(() => BackupRunner.Instance.StartBackup(BackupRunnerViewModel.Instance.CurrentBackupPattern));
             t.Start();
         }
 

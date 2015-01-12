@@ -103,16 +103,6 @@ namespace SimpleBackupConsole
             }
         }
 
-        public event EventHandler ShutdownRequested;
-
-        public virtual void OnShutdownRequested(EventArgs e)
-        {
-            if (ShutdownRequested != null)
-            {
-                ShutdownRequested(this, e);
-            }
-        }
-
         public event EventHandler BackupCompleted;
 
         public virtual void OnBackupCompleted(EventArgs e)

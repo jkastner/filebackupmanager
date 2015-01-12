@@ -155,11 +155,6 @@ namespace SimpleBackupConsole
                     _tabIndex--;
                 }
             }
-            if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
-            {
-                BackupRunnerViewModel.Instance.OnShutdownRequested(new EventArgs());
-                TextReporter.Report("Shutting down...", TextReporter.TextType.Output);
-            }
             DateTime endTime = DateTime.Now;
             double backupDuration = Math.Round((endTime - startTime).TotalMinutes, 1);
             TextReporter.Report("Backup ended at " + DateTime.Now, TextReporter.TextType.Output);
