@@ -92,7 +92,11 @@ namespace SimpleBackupConsole
             {
                 TextReporter.Report("Skipping copy size estimation...", TextReporter.TextType.Output);
             }
-            List<Tuple<Tuple<Source, Destination>, long>> directorySizes = GetAllDirectorySizes(currentBackup);
+            var directorySizes = new List<Tuple<Tuple<Source, Destination>, long>>();
+            if (ConfigViewModel.Instance.CalculateCopyTime)
+            {
+                directorySizes = GetAllDirectorySizes(currentBackup);
+            }
             _overallMax = directorySizes.Sum(x => x.Item2);
             foreach (var curPair in currentBackup.Pattern)
             {
@@ -167,17 +171,14 @@ namespace SimpleBackupConsole
         private List<Tuple<Tuple<Source, Destination>, long>> GetAllDirectorySizes(BackupPattern currentBackup)
         {
             var info = new List<Tuple<Tuple<Source, Destination>, long>>();
-            if (ConfigViewModel.Instance.CalculateCopyTime)
+            foreach (var curPair in currentBackup.Pattern)
             {
-                foreach (var curPair in currentBackup.Pattern)
+                long curSize = GetDirectorySize(new DirectoryInfo(curPair.Key.BackupSource));
+                foreach (Destination curDest in curPair.Value)
                 {
-                    long curSize = GetDirectorySize(new DirectoryInfo(curPair.Key.BackupSource));
-                    foreach (Destination curDest in curPair.Value)
-                    {
-                        info.Add(
-                            new Tuple<Tuple<Source, Destination>, long>(
-                                new Tuple<Source, Destination>(curPair.Key, curDest), curSize));
-                    }
+                    info.Add(
+                        new Tuple<Tuple<Source, Destination>, long>(
+                            new Tuple<Source, Destination>(curPair.Key, curDest), curSize));
                 }
             }
             return info;

@@ -206,6 +206,7 @@ namespace BackupUI
         {
             StartBackup_Button.IsEnabled = false;
             StaggerBackup_CheckBox.IsEnabled = false;
+            CalculateCopyTime_CheckBox.IsEnabled = false;
             ReportTextToUI("\n\n-----------------------\nStarting backup.....", TextReporter.TextType.Output);
             var t = new Task(() => BackupRunner.Instance.StartBackup(BackupRunnerViewModel.Instance.CurrentBackupPattern));
             t.Start();
