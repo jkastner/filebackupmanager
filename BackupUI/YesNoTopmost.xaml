@@ -1,0 +1,19 @@
+﻿<Window x:Class="BackupUI.YesNoTopmost"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="YesNoTopmost" Width="200" Height="150"
+        Topmost="True"
+        WindowStyle="ToolWindow" ResizeMode="NoResize"
+        >
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox Margin="5" x:Name="Message_TextBlock" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" IsReadOnly="True"></TextBox>
+        <DockPanel Grid.Row="1">
+        <Button Margin="5" Width="72" Height="22" HorizontalAlignment="Left"  Click="YesClicked">Yes</Button>
+            <Button Margin="5" Width="72" Height="22" HorizontalAlignment="Right" Click="NoClicked">No</Button>
+        </DockPanel>
+    </Grid>
+</Window>

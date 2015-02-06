@@ -114,13 +114,15 @@ namespace BackupUI
                 shutDownWarning.Interval = TimeSpan.FromSeconds(15);
                 shutDownWarning.Tick += ShutDownWarningOnTick;
                 shutDownWarning.Start();
-                MessageBoxResult dialogResult = MessageBox.Show("Proceed with shut down?\n(Press NO to keep computer on)", "Shut down confirmation", MessageBoxButton.YesNo);
-                if (dialogResult == MessageBoxResult.No)
+                YesNoTopmost tw = new YesNoTopmost("Shut down confirmation", "Proceed with shut down?\n(Press NO to keep computer on)");
+                tw.ShowActivated = true;
+                tw.ShowDialog();
+                if (!tw.YesWasClicked)
                 {
                     _shutDownCancelRequested = true;
                     ReportTextToUI("\n\nShutdown canceled.", TextReporter.TextType.Output);
                 }
-                if (dialogResult == MessageBoxResult.Yes)
+                if (tw.YesWasClicked)
                 {
                     ShutDownComputer();
                 }

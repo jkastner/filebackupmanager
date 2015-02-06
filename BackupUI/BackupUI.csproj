@@ -62,6 +62,9 @@
     <Compile Include="SingleBackupPatternDisplay.xaml.cs">
       <DependentUpon>SingleBackupPatternDisplay.xaml</DependentUpon>
     </Compile>
+    <Compile Include="YesNoTopmost.xaml.cs">
+      <DependentUpon>YesNoTopmost.xaml</DependentUpon>
+    </Compile>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -75,6 +78,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SingleBackupPatternDisplay.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="YesNoTopmost.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
