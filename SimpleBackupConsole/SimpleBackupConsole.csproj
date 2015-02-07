@@ -54,7 +54,6 @@
     <Compile Include="BackupRunner.cs" />
     <Compile Include="BackupRunnerViewModel.cs" />
     <Compile Include="BackupPatternReader.cs" />
-    <Compile Include="BaseAppSettingsViewModel.cs" />
     <Compile Include="ConfigViewModel.cs" />
     <Compile Include="PathConstants.cs" />
     <Compile Include="ProgressEvent.cs" />
@@ -65,6 +64,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ApplicationConfiguration\ApplicationConfiguration.csproj">
+      <Project>{69ADCEA0-B296-4E7C-8404-052BE40C70C0}</Project>
+      <Name>ApplicationConfiguration</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

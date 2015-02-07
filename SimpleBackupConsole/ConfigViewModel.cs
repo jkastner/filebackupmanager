@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using ApplicationConfiguration;
 
 namespace SimpleBackupConsole
 {
@@ -25,6 +26,25 @@ namespace SimpleBackupConsole
 
         private ConfigViewModel()
         {
+            AddValidType(typeof(HashSet<DayOfWeek>), DayOfWeekParser);
+            LoadAppConfigInfo();
+            LoadOverriddenValues();
+        }
+
+        private void DayOfWeekParser(string readValue)
+        {
+            string[] set = readValue.Split(',');
+            TargetDays.Clear();
+            foreach (string cur in set)
+            {
+                Enum q;
+                DayOfWeek day;
+                if (Enum.TryParse(cur, out day))
+                {
+                    TargetDays.Add(day);
+                }
+            }
+            SetCheckboxesBySet(TargetDays);
         }
 
         public static ConfigViewModel Instance
@@ -195,26 +215,6 @@ namespace SimpleBackupConsole
 
         }
 
-        protected override void UseCustomParser(PropertyInfo propertyInfo, string readValue)
-        {
-            if (propertyInfo.PropertyType == typeof (HashSet<DayOfWeek>))
-            {
-                string[] set = readValue.Split(',');
-                TargetDays.Clear();
-                foreach (string cur in set)
-                {
-                    Enum q;
-                    DayOfWeek day;
-                    if (Enum.TryParse(cur, out day))
-                    {
-                        TargetDays.Add(day);
-                    }
-                }
-                SetCheckboxesBySet(TargetDays);
-
-            }
-        }
-
         private void SetCheckboxesBySet(HashSet<DayOfWeek> set)
         {
             SundayChecked = set.Contains(DayOfWeek.Sunday);
@@ -224,13 +224,6 @@ namespace SimpleBackupConsole
             ThursdayChecked = set.Contains(DayOfWeek.Thursday);
             FridayChecked = set.Contains(DayOfWeek.Friday);
             SaturdayChecked = set.Contains(DayOfWeek.Saturday);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected override HashSet<Type> DefineValidTypes()
-        {
-            return new HashSet<Type> {typeof (bool), typeof (String), typeof (HashSet<DayOfWeek>)};
         }
 
         protected override void LoadOverriddenValues()

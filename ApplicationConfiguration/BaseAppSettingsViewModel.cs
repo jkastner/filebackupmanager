@@ -6,39 +6,65 @@ using System.Configuration;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Text;
+using System.Windows.Forms;
 using ApplicationConfiguration.Annotations;
 
-
-namespace SimpleBackupConsole
+namespace ApplicationConfiguration
 {
     public abstract class BaseAppSettingsViewModel : INotifyPropertyChanged
     {
         private readonly Configuration _configuration;
-        private HashSet<Type> _validTypes;
-        private bool _yay;
 
-        internal BaseAppSettingsViewModel()
+        private readonly Dictionary<Type, Action<String>> _registeredParsers = new Dictionary<Type, Action<String>>();
+
+        public BaseAppSettingsViewModel()
         {
-            _configuration = ConfigurationManager.OpenExeConfiguration(System.Windows.Forms.Application.ExecutablePath);
-            _validTypes = DefineValidTypes();
-            LoadAppConfigInfo();
-            LoadOverriddenValues();
+            _configuration = ConfigurationManager.OpenExeConfiguration(Application.ExecutablePath);
         }
 
-        protected abstract HashSet<Type> DefineValidTypes();
+        public IEnumerable<Type> ValidTypes
+        {
+            get
+            {
+                yield return typeof (bool);
+                yield return typeof (int);
+                foreach (var cur in _registeredParsers)
+                {
+                    yield return cur.Key;
+                }
+            }
+        }
 
-        protected abstract void LoadOverriddenValues();
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        private void LoadAppConfigInfo()
+        /// <summary>
+        ///     Any types that can be parsed in addition to bool and int (such as a DateTime property)
+        /// </summary>
+        public void AddValidType(Type targetType, Action<String> theParser)
+        {
+            if (!_registeredParsers.ContainsKey(targetType))
+            {
+                _registeredParsers.Add(targetType, null);
+            }
+            _registeredParsers[targetType] = theParser;
+        }
+
+        /// <summary>
+        /// Used to load values that need to be changes after default loading. Called after the values are populated in the constructor.
+        /// </summary>
+        protected virtual void LoadOverriddenValues()
+        {
+        }
+
+        protected void LoadAppConfigInfo()
         {
             //From
             //http://stackoverflow.com/questions/824802/c-how-to-get-all-public-both-get-and-set-string-properties-of-a-type
-            PropertyInfo[] properties = this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+            PropertyInfo[] properties = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (PropertyInfo p in properties)
             {
-                if (!_validTypes.Contains(p.PropertyType))
+                if (!ValidTypes.Contains(p.PropertyType))
                 {
                     continue;
                 }
@@ -73,14 +99,9 @@ namespace SimpleBackupConsole
                 }
                 else
                 {
-                    UseCustomParser(p, readValue);
+                    _registeredParsers[p.PropertyType].Invoke(readValue);
                 }
             }
-        }
-
-        protected virtual void UseCustomParser(PropertyInfo propertyInfo, string readValue)
-        {
-            
         }
 
         private void SaveChanges()
@@ -88,11 +109,11 @@ namespace SimpleBackupConsole
             //From
             //http://stackoverflow.com/questions/824802/c-how-to-get-all-public-both-get-and-set-string-properties-of-a-type
             PropertyInfo[] properties =
-                this.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
             foreach (PropertyInfo p in properties)
             {
-                if (!_validTypes.Contains(p.PropertyType))
+                if (!ValidTypes.Contains(p.PropertyType))
                 {
                     continue;
                 }
@@ -112,8 +133,8 @@ namespace SimpleBackupConsole
                 if (typeof (IEnumerable).IsAssignableFrom(p.PropertyType))
                 {
                     var curProp = p.GetValue(this) as IEnumerable;
-                    List<String> sb = new List<string>();
-                    foreach (var cur in curProp)
+                    var sb = new List<string>();
+                    foreach (object cur in curProp)
                     {
                         sb.Add(cur.ToString());
                     }
@@ -123,7 +144,6 @@ namespace SimpleBackupConsole
                 {
                     _configuration.AppSettings.Settings.Add(p.Name, p.GetValue(this).ToString());
                 }
-
             }
 
             _configuration.Save(ConfigurationSaveMode.Modified);
@@ -134,8 +154,6 @@ namespace SimpleBackupConsole
             SaveChanges();
         }
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
