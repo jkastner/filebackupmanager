@@ -131,7 +131,10 @@ namespace ApplicationConfiguration
                     continue;
                 }
                 _configuration.AppSettings.Settings.Remove(p.Name);
-                if (typeof (IEnumerable).IsAssignableFrom(p.PropertyType))
+                if (
+                    typeof (IEnumerable).IsAssignableFrom(p.PropertyType)
+                    && (p.PropertyType != typeof(String))
+                    )
                 {
                     var curProp = p.GetValue(this) as IEnumerable;
                     var sb = new List<string>();
