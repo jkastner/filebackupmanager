@@ -28,6 +28,7 @@ namespace ApplicationConfiguration
             {
                 yield return typeof (bool);
                 yield return typeof (int);
+                yield return typeof(string);
                 foreach (var cur in _registeredParsers)
                 {
                     yield return cur.Key;
