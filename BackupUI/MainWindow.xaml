@@ -48,7 +48,7 @@
                         
                     </DockPanel>
                     <CheckBox Margin="5" Grid.Row="4" IsChecked="{Binding CalculateCopyTime}" x:Name="CalculateCopyTime_CheckBox">Calculate copy time</CheckBox>
-                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.61"></TextBlock>
+                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.62"></TextBlock>
                 </Grid>
             </TabItem>
         </TabControl>

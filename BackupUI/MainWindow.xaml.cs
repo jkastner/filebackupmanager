@@ -114,20 +114,25 @@ namespace BackupUI
                 shutDownWarning.Interval = TimeSpan.FromSeconds(15);
                 shutDownWarning.Tick += ShutDownWarningOnTick;
                 shutDownWarning.Start();
-                YesNoTopmost tw = new YesNoTopmost("Shut down confirmation", "Proceed with shut down?\n(Press NO to keep computer on)");
-                tw.ShowActivated = true;
-                tw.ShowDialog();
-                if (!tw.YesWasClicked)
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    _shutDownCancelRequested = true;
-                    ReportTextToUI("\n\nShutdown canceled.", TextReporter.TextType.Output);
-                }
-                if (tw.YesWasClicked)
-                {
-                    ShutDownComputer();
-                }
+                    YesNoTopmost tw = new YesNoTopmost("Shut down confirmation",
+                        "Proceed with shut down?\n(Press NO to keep computer on)");
+                    tw.ShowActivated = true;
+                    tw.ShowDialog();
+                    if (!tw.YesWasClicked)
+                    {
+                        _shutDownCancelRequested = true;
+                        ReportTextToUI("\n\nShutdown canceled.", TextReporter.TextType.Output);
+                    }
+                    if (tw.YesWasClicked)
+                    {
+                        ShutDownComputer();
+                    }
+                }));
+
             }
-            //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
+                //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
             else if (ConfigViewModel.Instance.CloseWindowOnCompletion || BackupRunnerViewModel.Instance.ShouldClose)
             {
                 Application.Current.Dispatcher.Invoke(() => { Close(); });
