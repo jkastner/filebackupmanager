@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using ApplicationConfiguration;
 
+
 namespace SimpleBackupConsole
 {
     public class ConfigViewModel : BaseAppSettingsViewModel

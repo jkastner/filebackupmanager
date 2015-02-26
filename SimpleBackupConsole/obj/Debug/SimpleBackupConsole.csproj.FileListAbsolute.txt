@@ -1,0 +1,7 @@
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\bin\Debug\BackupSystemDLL.dll
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\bin\Debug\BackupSystemDLL.pdb
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\obj\Debug\SimpleBackupConsole.csprojResolveAssemblyReference.cache
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\obj\Debug\BackupSystemDLL.dll
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\obj\Debug\BackupSystemDLL.pdb
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\bin\Debug\ApplicationConfiguration.dll
+E:\Google Drive\Documents\Programming\VisualStudioProjects\FileBackup\SimpleBackupConsole\bin\Debug\ApplicationConfiguration.pdb
