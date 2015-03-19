@@ -57,7 +57,6 @@ namespace BackupUI
                 });
         }
 
-
         private void TextReported(object sender, EventArgs e)
         {
             var text = e as TextEvent;
@@ -107,19 +106,24 @@ namespace BackupUI
             ReportTextToUI("Completed.", TextReporter.TextType.Output);
             WriteLog();
             SetUIToFinished();
-
             if (ConfigViewModel.Instance.ShutdownComputerOnCompletion)
             {
-                DispatcherTimer shutDownWarning = new DispatcherTimer();
-                shutDownWarning.Interval = TimeSpan.FromSeconds(15);
-                shutDownWarning.Tick += ShutDownWarningOnTick;
-                shutDownWarning.Start();
+                Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    DispatcherTimer shutDownWarning = new DispatcherTimer();
+                    shutDownWarning.Interval = TimeSpan.FromSeconds(15);
+                    shutDownWarning.Tick += ShutDownWarningOnTick;
+                    shutDownWarning.Start();
+                }));
+                
+                
                 Application.Current.Dispatcher.BeginInvoke(new Action(() =>
                 {
                     YesNoTopmost tw = new YesNoTopmost("Shut down confirmation",
                         "Proceed with shut down?\n(Press NO to keep computer on)");
                     tw.ShowActivated = true;
                     tw.ShowDialog();
+                    
                     if (!tw.YesWasClicked)
                     {
                         _shutDownCancelRequested = true;
@@ -132,11 +136,12 @@ namespace BackupUI
                 }));
 
             }
-                //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
+            //Only close the window if the backup run wasn't even attempted, due to it being the wrong day.
             else if (ConfigViewModel.Instance.CloseWindowOnCompletion || BackupRunnerViewModel.Instance.ShouldClose)
             {
                 Application.Current.Dispatcher.Invoke(() => { Close(); });
             }
+
         }
 
         private void ShutDownWarningOnTick(object sender, EventArgs eventArgs)
@@ -171,6 +176,11 @@ namespace BackupUI
             String finalName = fileName;
             int curAttempt = 1;
             String dir = Path.Combine(PathConstants.CurrentDirectory, "BackupLogs");
+            if (!Directory.Exists(dir))
+            {
+                ReportTextToUI("Error - could not write log. Directory "+dir+" did not exist.", TextReporter.TextType.Output);
+                return;
+            }
             while (File.Exists(Path.Combine(dir, finalName + ".txt")))
             {
                 finalName = fileName + "_" + curAttempt;
