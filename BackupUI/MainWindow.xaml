@@ -53,7 +53,7 @@
             </TabItem>
         </TabControl>
         <CheckBox  Grid.Row="0" Grid.Column="2"
-                DataContext="{Binding ConfigViewModel}"
+                DataContext="{Binding ConfigViewModel}" Height="22" VerticalAlignment="Top"
                 Margin="5,1,5,1" Name="ShutDown_CheckBox" IsChecked="{Binding ShutdownComputerOnCompletion}">Shutdown computer when finished</CheckBox>
         <Button Margin="5,5,5,5" Height="Auto" FontSize="22"
                 Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Name="StartBackup_Button"
