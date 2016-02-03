@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using BackupUI.Annotations;
-using SimpleBackupConsole;
+using AutomaticBackup;
 
 namespace BackupUI
 {
