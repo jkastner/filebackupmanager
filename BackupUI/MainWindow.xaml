@@ -17,24 +17,27 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TabControl Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="0">
-            <TabItem Header="Main"  DataContext="{Binding BackupRunnerViewModel}">
+            <TabItem Header="Main" DataContext="{Binding BackupRunnerViewModel}">
                 <RichTextBox FontSize="14" Margin="5,5,5,5" HorizontalScrollBarVisibility="Auto"
                              VerticalScrollBarVisibility="Auto"
                              IsReadOnly="True"
                              BorderBrush="Black" BorderThickness="1" Name="BackupPatten_RichTextBox" />
             </TabItem>
-            <TabItem DataContext="{Binding ConfigViewModel}" Header="Config" x:Name="Config_TabItem" >
+            <TabItem DataContext="{Binding ConfigViewModel}" Header="Config" x:Name="Config_TabItem">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition Height="*"></RowDefinition>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <CheckBox Margin="5" Name="StaggerBackup_CheckBox" IsChecked="{Binding StaggerBackup}">Stagger backup</CheckBox>
-                    <CheckBox Margin="5" Grid.Row="1" Name="CloseWindow_CheckBox" IsChecked="{Binding CloseWindowOnCompletion}">Close window</CheckBox>
+                    <CheckBox Margin="5" Grid.Row="1" Name="CloseWindow_CheckBox"
+                              IsChecked="{Binding CloseWindowOnCompletion}">
+                        Close window
+                    </CheckBox>
                     <Label Grid.Row="2">Auto Backup Days:</Label>
                     <DockPanel Margin="5" Grid.Row="3">
                         <Button Margin="2" Click="ToggleDays_Clicked" ToolTip="Clear or set all checked days">Toggle All</Button>
@@ -45,21 +48,67 @@
                         <CheckBox Margin="2" IsChecked="{Binding ThursdayChecked}">Thursday</CheckBox>
                         <CheckBox Margin="2" IsChecked="{Binding FridayChecked}">Friday</CheckBox>
                         <CheckBox Margin="2" IsChecked="{Binding SaturdayChecked}">Saturday</CheckBox>
-                        
+
                     </DockPanel>
-                    <CheckBox Margin="5" Grid.Row="4" IsChecked="{Binding CalculateCopyTime}" x:Name="CalculateCopyTime_CheckBox">Calculate copy time</CheckBox>
-                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.63"></TextBlock>
+                    <CheckBox Margin="5" Grid.Row="4" IsChecked="{Binding CalculateCopyTime}"
+                              x:Name="CalculateCopyTime_CheckBox">
+                        Calculate copy time
+                    </CheckBox>
+                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.63" />
                 </Grid>
             </TabItem>
         </TabControl>
-        <CheckBox  Grid.Row="0" Grid.Column="2"
-                DataContext="{Binding ConfigViewModel}" Height="22" VerticalAlignment="Top"
-                Margin="5,1,5,1" Name="ShutDown_CheckBox" IsChecked="{Binding ShutdownComputerOnCompletion}">Shutdown computer when finished</CheckBox>
-        <Button Margin="5,5,5,5" Height="Auto" FontSize="22"
-                Grid.Row="1" Grid.RowSpan="2" Grid.Column="2" Name="StartBackup_Button"
-                Click="StartBackup_Button_Click">
-            Start
-        </Button>
+        <Grid Grid.Column="2" Grid.RowSpan="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
+            </Grid.RowDefinitions>
+            <CheckBox Grid.Row="0" 
+                      DataContext="{Binding ConfigViewModel}" Height="22" VerticalAlignment="Top"
+                      Margin="5,1,5,1" Name="ShutDown_CheckBox" IsChecked="{Binding ShutdownComputerOnCompletion}">
+                Shutdown computer when finished
+            </CheckBox>
+            <ListBox x:Name="ErrorsListBox"
+                     ToolTip="Errors during backup"
+                     Grid.Row="1" BorderBrush="Black" Margin="5"
+                     VerticalAlignment="Stretch"
+                     >
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="150">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="5*"></ColumnDefinition>
+                                <ColumnDefinition Width="Auto"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                                <RowDefinition Height="Auto"></RowDefinition>
+                            </Grid.RowDefinitions>
+                            <TextBlock Text="{Binding ShortDescription}"></TextBlock>
+                            <Expander 
+                                
+                                x:Name="MoreInfoExpander" Grid.Column="1" ExpandDirection="Down">
+                            </Expander>
+                            <TextBox Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                Visibility="{Binding IsExpanded,ElementName=MoreInfoExpander,Converter={StaticResource BooleanToVisibilityConverter}}"
+                                     
+                                     IsReadOnly="True" TextWrapping="Wrap" Text="{Binding Text}"></TextBox>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                
+                
+            </ListBox>
+
+            <Button Margin="5,5,5,5" Height="Auto" FontSize="22"
+                    Grid.Row="2" Grid.Column="2" Name="StartBackup_Button"
+                    Click="StartBackup_Button_Click">
+                Start
+            </Button>
+        </Grid>
+
+
         <Label Grid.Row="1" Grid.Column="0">Overall: </Label>
         <Label Grid.Row="2" Grid.Column="0">Current: </Label>
         <ProgressBar Grid.Row="1" Grid.Column="1" Name="AllFilesCopied_ProgressBar" />

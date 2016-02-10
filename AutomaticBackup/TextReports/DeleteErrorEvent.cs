@@ -2,10 +2,8 @@
 
 namespace AutomaticBackup
 {
-    class DeleteErrorEvent : TextEvent
+    public class DeleteErrorEvent : TextEvent, ICommonError
     {
-        public string SourceFile { get; set; }
-        public string Destinationfile { get; set; }
         public string TargetFile { get; set; }
         public Exception ThrownException { get; set; }
 
@@ -16,6 +14,14 @@ namespace AutomaticBackup
         {
             TargetFile = targetFile;
             ThrownException = thrownException;
+        }
+
+        public string ShortDescription
+        {
+            get
+            {
+                return TargetFile;
+            }
         }
     }
 }

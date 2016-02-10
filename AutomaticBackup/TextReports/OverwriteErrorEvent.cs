@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace AutomaticBackup
 {
-    class OverwriteErrorEvent : TextEvent
+    public class OverwriteErrorEvent : TextEvent, ICommonError
     {
         public string SourceFile { get; set; }
         public string Destinationfile { get; set; }
@@ -20,6 +20,11 @@ namespace AutomaticBackup
             SourceFile = sourceFile;
             Destinationfile = destinationfile;
             ThrownException = thrownException;
+        }
+
+        public string ShortDescription
+        {
+            get { return Destinationfile; } 
         }
     }
 }

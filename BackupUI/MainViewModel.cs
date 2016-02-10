@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace BackupUI
     {
         private BackupRunnerViewModel _backupRunnerViewModel = BackupRunnerViewModel.Instance;
         private ConfigViewModel _configViewModel = ConfigViewModel.Instance;
+        private ObservableCollection<ICommonError> _backupErrors = new ObservableCollection<ICommonError>();
 
         public BackupRunnerViewModel BackupRunnerViewModel
         {
@@ -46,6 +48,13 @@ namespace BackupUI
         {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        public ObservableCollection<ICommonError> BackupErrors
+        {
+            get { return _backupErrors; }
+            set { _backupErrors = value; }
         }
     }
 }

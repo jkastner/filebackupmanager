@@ -31,6 +31,16 @@ namespace BackupUI
             TextReporter.ReportProgress += ProgressReported;
             _richTextParagraph = new Paragraph();
             BackupPatten_RichTextBox.Document = new FlowDocument(_richTextParagraph);
+            ErrorsListBox.ItemsSource = _currentDataContext.BackupErrors;
+            //int x = 200;
+            //while (x > 0)
+            //{
+            //    ReportCommonError(new DeleteErrorEvent("YAAY" + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid() + Guid.NewGuid(),
+            //    TextReporter.TextType.CommonBackupError, Guid.NewGuid().ToString() + Guid.NewGuid().ToString(), new Exception()));
+            //    x--;
+            //}
+            
+
         }
 
         public MainViewModel CurrentDataContext
@@ -65,10 +75,26 @@ namespace BackupUI
                 case TextReporter.TextType.ForLogOnly:
                     _activityLog.AppendLine(text.Text);
                     break;
+                case TextReporter.TextType.CommonBackupError:
+                    ReportCommonError(text as ICommonError);
+                    break;
                 default:
                     ReportTextToUI(text.Text, text.ReportType);
                     break;
             }
+        }
+
+        private void ReportCommonError(ICommonError text)
+        {
+            if (text == null)
+            {
+                return;
+            }
+            Application.Current.Dispatcher.Invoke(
+                () =>
+                {
+                    _currentDataContext.BackupErrors.Add(text);
+                });
         }
 
         private void ReportTextToUI(String newText, TextReporter.TextType theType)
