@@ -71,7 +71,7 @@ namespace BackupUI
             }
         }
 
-        private void ReportTextToUI(string newText, TextReporter.TextType theType)
+        private void ReportTextToUI(String newText, TextReporter.TextType theType)
         {
             try
             {
@@ -83,6 +83,9 @@ namespace BackupUI
                         break;
                     case TextReporter.TextType.Output:
                         displayBrush = Brushes.Black;
+                        break;
+                    case TextReporter.TextType.CommonBackupError:
+                        displayBrush = Brushes.Blue;
                         break;
                 }
                 Application.Current.Dispatcher.Invoke(

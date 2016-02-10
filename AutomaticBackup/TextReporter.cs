@@ -14,6 +14,7 @@ namespace AutomaticBackup
             InitialError,
             Output,
             BackupError,
+            CommonBackupError,
             ForLogOnly
         };
         public static void Report(String text, TextType t)
@@ -58,6 +59,18 @@ namespace AutomaticBackup
             {
                 ReportProgress(null, e);
             }
+        }
+
+        public static void ReportCommonCopyError(string longMessage, string source, string destination, Exception excep)
+        {
+            OverwriteErrorEvent tr = new OverwriteErrorEvent(longMessage, TextType.CommonBackupError, source, destination, excep);
+            OnReportText(tr);
+        }
+
+        public static void ReportDeleteError(string longMessage, string file, Exception e)
+        {
+            DeleteErrorEvent de = new DeleteErrorEvent(longMessage, TextType.CommonBackupError, file, e);
+
         }
     }
 }

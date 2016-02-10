@@ -196,9 +196,9 @@ namespace AutomaticBackup
                 {
                     DeleteFile(file);
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
-                    TextReporter.Report("Could not delete targetFile: " + file, TextReporter.TextType.BackupError);
+                    TextReporter.ReportDeleteError("Could not delete targetFile: " + file, file, e);
                 }
             }
             foreach (string dir in dirs)
@@ -209,9 +209,9 @@ namespace AutomaticBackup
             {
                 DeleteDirectoryCall(target_dir);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                TextReporter.Report("Could not delete directory: " + target_dir, TextReporter.TextType.BackupError);
+                TextReporter.ReportDeleteError("Could not delete directory: " + target_dir, target_dir, e);
             }
         }
 
@@ -276,9 +276,9 @@ namespace AutomaticBackup
                 }
                 catch (Exception excep)
                 {
-                    TextReporter.Report(
+                    TextReporter.ReportDeleteError(
                         Indentation + "Error deleting " + file.FullName + "\n" + Indentation +
-                        excep.Message, TextReporter.TextType.BackupError);
+                        excep.Message, file.FullName, excep);
                 }
             }
 
@@ -361,9 +361,10 @@ namespace AutomaticBackup
                 }
                 catch (Exception excep)
                 {
-                    TextReporter.Report(
-                        Indentation + "Error copying " + file.FullName + " to " + temppath + "\n" + Indentation +
-                        excep.Message, TextReporter.TextType.BackupError);
+                    String longMessage = Indentation + "Error copying " + file.FullName + " to " + temppath + "\n" +
+                                         Indentation +
+                                         excep.Message;
+                    TextReporter.ReportCommonCopyError(longMessage, file.FullName, temppath + "\n", excep);
                 }
             }
 
