@@ -54,8 +54,7 @@ namespace AutomaticBackup
             {
                 BackupRunnerViewModel.Instance.CloseUIOnCompleted = true;
                 string dayStrings = string.Join(",", ConfigViewModel.Instance.TargetDays.ToArray());
-                TextReporter.Report(
-                    "Targets day " + dayStrings + " did not match current day " +
+                ReportWithIndentation("Targets day " + dayStrings + " did not match current day " +
                     DateTime.Now.DayOfWeek, TextReporter.TextType.Output);
                 BackupRunnerViewModel.Instance.ShouldWriteLog = false;
                 BackupRunnerViewModel.Instance.ShouldClose = true;
@@ -83,14 +82,14 @@ namespace AutomaticBackup
             }
             DateTime startTime = DateTime.Now;
 
-            TextReporter.Report("Backup started at " + DateTime.Now, TextReporter.TextType.Output);
+            ReportWithIndentation("Backup started at " + DateTime.Now, TextReporter.TextType.Output);
             if (ConfigViewModel.Instance.CalculateCopyTime)
             {
-                TextReporter.Report("Estimating copy size...", TextReporter.TextType.Output);
+                ReportWithIndentation("Estimating copy size...", TextReporter.TextType.Output);
             }
             else
             {
-                TextReporter.Report("Skipping copy size estimation...", TextReporter.TextType.Output);
+                ReportWithIndentation("Skipping copy size estimation...", TextReporter.TextType.Output);
             }
             var directorySizes = new List<Tuple<Tuple<Source, Destination>, long>>();
             if (ConfigViewModel.Instance.CalculateCopyTime)
@@ -101,7 +100,7 @@ namespace AutomaticBackup
             foreach (var curPair in currentBackup.Pattern)
             {
                 Source curSource = curPair.Key;
-                TextReporter.Report("Starting backup of: " + curSource.BackupSource, TextReporter.TextType.Output);
+                ReportWithIndentation("Starting backup of: " + curSource.BackupSource, TextReporter.TextType.Output);
                 foreach (Destination curDestination in curPair.Value)
                 {
                     try
@@ -109,7 +108,7 @@ namespace AutomaticBackup
                         Thread.Sleep(2000);
                         if (!Directory.Exists(curDestination.BackupDestination))
                         {
-                            TextReporter.Report(Indentation + "Creating " + curDestination.BackupDestination,
+                            ReportWithIndentation( "Creating " + curDestination.BackupDestination,
                                 TextReporter.TextType.Output);
                             Directory.CreateDirectory(curDestination.BackupDestination);
                         }
@@ -126,23 +125,23 @@ namespace AutomaticBackup
                             _currentProgress = 0;
                             string TargetDir = currentBackup.UniqueFinalPath(curSource, curDestination, shouldStagger);
                             _tabIndex++;
-                            TextReporter.Report(Indentation + "Copying " + currentSource + " to " + TargetDir,
+                            ReportWithIndentation( "Copying " + currentSource + " to " + TargetDir,
                                 TextReporter.TextType.Output);
                             _tabIndex++;
-                            TextReporter.Report(Indentation + "Copying files...", TextReporter.TextType.Output);
+                            ReportWithIndentation( "Copying files...", TextReporter.TextType.Output);
                             HandleBackup(currentSource, TargetDir);
-                            TextReporter.Report(Indentation + "Cleaning old files from " + TargetDir,
+                            ReportWithIndentation( "Cleaning old files from " + TargetDir,
                                 TextReporter.TextType.Output);
                             HandleCleanup(currentSource, TargetDir);
                             _tabIndex--;
-                            TextReporter.Report(Indentation + "Completed copy of " + currentSource + " to " + TargetDir,
+                            ReportWithIndentation( "Completed copy of " + currentSource + " to " + TargetDir,
                                 TextReporter.TextType.Output);
                         }
                         catch (Exception e)
                         {
                             _tabIndex++;
-                            TextReporter.Report(
-                                Indentation + "ERROR: Could not copy " + currentSource + " to " +
+                            ReportWithIndentation(
+                                 "ERROR: Could not copy " + currentSource + " to " +
                                 curDestination.BackupDestination + "\n" +
                                 Indentation + "Exception: " + e.Message, TextReporter.TextType.BackupError);
                             _tabIndex--;
@@ -150,15 +149,15 @@ namespace AutomaticBackup
                     }
                     catch (Exception e)
                     {
-                        TextReporter.Report(Indentation + "ERROR: " + e.Message, TextReporter.TextType.BackupError);
+                        ReportWithIndentation("ERROR: " + e.Message, TextReporter.TextType.BackupError);
                     }
                     _tabIndex--;
                 }
             }
             DateTime endTime = DateTime.Now;
             double backupDuration = Math.Round((endTime - startTime).TotalMinutes, 1);
-            TextReporter.Report("Backup ended at " + DateTime.Now, TextReporter.TextType.Output);
-            TextReporter.Report("Duration:  " + backupDuration + " minutes", TextReporter.TextType.Output);
+            ReportWithIndentation("Backup ended at " + DateTime.Now, TextReporter.TextType.Output);
+            ReportWithIndentation("Duration:  " + backupDuration + " minutes", TextReporter.TextType.Output);
             BackupRunnerViewModel.Instance.OnBackupCompleted(new EventArgs());
         }
 
@@ -184,7 +183,7 @@ namespace AutomaticBackup
         ///     Use this helper method instead
         /// </summary>
         /// <param name="target_dir"></param>
-        public static void DeleteDirectory(string target_dir)
+        public void DeleteDirectory(string target_dir)
         {
             string[] files = Directory.GetFiles(target_dir);
             string[] dirs = Directory.GetDirectories(target_dir);
@@ -215,11 +214,11 @@ namespace AutomaticBackup
             }
         }
 
-        private static void DeleteDirectoryCall(string target)
+        private void DeleteDirectoryCall(string target)
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would delete " + target, TextReporter.TextType.Output);
+                ReportWithIndentation("Would delete " + target, TextReporter.TextType.Output);
             }
             else
             {
@@ -227,11 +226,11 @@ namespace AutomaticBackup
             }
         }
 
-        private static void DeleteFile(string file)
+        private void DeleteFile(string file)
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would delete " + file, TextReporter.TextType.Output);
+                ReportWithIndentation("Would delete " + file, TextReporter.TextType.Output);
             }
             else
             {
@@ -270,7 +269,7 @@ namespace AutomaticBackup
                 {
                     if (!File.Exists(temppath))
                     {
-                        TextReporter.Report(Indentation + "Removing " + file.FullName, TextReporter.TextType.ForLogOnly);
+                        ReportWithIndentation( "Removing " + file.FullName, TextReporter.TextType.ForLogOnly);
                         DeleteFile(file.FullName);
                     }
                 }
@@ -288,7 +287,7 @@ namespace AutomaticBackup
                 string temppath = Path.Combine(originalDir, subdir.Name);
                 if (!Directory.Exists(temppath))
                 {
-                    TextReporter.Report(Indentation + "Removing " + subdir.FullName, TextReporter.TextType.ForLogOnly);
+                    ReportWithIndentation( "Removing " + subdir.FullName, TextReporter.TextType.ForLogOnly);
                     DeleteDirectory(subdir.FullName);
                 }
                 else
@@ -307,8 +306,8 @@ namespace AutomaticBackup
 
             if (!dir.Exists)
             {
-                TextReporter.Report(
-                    Indentation + "Source directory does not exist or could not be found: " + sourceDirName,
+                ReportWithIndentation(
+                     "Source directory does not exist or could not be found: " + sourceDirName,
                     TextReporter.TextType.BackupError);
             }
 
@@ -317,14 +316,14 @@ namespace AutomaticBackup
             {
                 try
                 {
-                    TextReporter.Report(Indentation + "Creating directory " + destDirName,
+                    ReportWithIndentation( "Creating directory " + destDirName,
                         TextReporter.TextType.ForLogOnly);
                     CreateDirectory(destDirName);
                 }
                 catch (Exception excep)
                 {
-                    TextReporter.Report(
-                        Indentation + "Error creating directory " + destDirName + "\n" + Indentation + excep.Message,
+                    ReportWithIndentation(
+                         "Error creating directory " + destDirName + "\n" + Indentation + excep.Message,
                         TextReporter.TextType.BackupError);
                 }
             }
@@ -353,8 +352,8 @@ namespace AutomaticBackup
                                 copyExplanation = "File did not exist in source";
                                 break;
                         }
-                        TextReporter.Report(
-                            Indentation + "Copying targetFile " + temppath + "\tExplanation: " + copyExplanation,
+                        ReportWithIndentation(
+                             "Copying targetFile " + temppath + "\tExplanation: " + copyExplanation,
                             TextReporter.TextType.ForLogOnly);
                         FileCopy(file, temppath);
                     }
@@ -387,7 +386,7 @@ namespace AutomaticBackup
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would copy " + targetFile.FullName + " to " + destination,
+                ReportWithIndentation("Would copy " + targetFile.FullName + " to " + destination,
                     TextReporter.TextType.Output);
             }
             else
@@ -400,12 +399,18 @@ namespace AutomaticBackup
         {
             if (_debugOnly)
             {
-                TextReporter.Report("Would created " + destDirName, TextReporter.TextType.Output);
+                ReportWithIndentation("Would created " + destDirName, TextReporter.TextType.Output);
             }
             else
             {
                 Directory.CreateDirectory(destDirName);
             }
+        }
+
+        private void ReportWithIndentation(string text, TextReporter.TextType output)
+        {
+            TextReporter.Report(Indentation+text, output);
+
         }
 
         /// <returns>
@@ -434,7 +439,7 @@ namespace AutomaticBackup
             {
                 if (!Directory.Exists(cur.BackupSource))
                 {
-                    TextReporter.Report(Indentation + "Error: " + cur.BackupSource + " did not exist.",
+                    ReportWithIndentation( "Error: " + cur.BackupSource + " did not exist.",
                         TextReporter.TextType.BackupError);
                     return false;
                 }

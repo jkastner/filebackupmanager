@@ -54,7 +54,7 @@
                               x:Name="CalculateCopyTime_CheckBox">
                         Calculate copy time
                     </CheckBox>
-                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.63" />
+                    <TextBlock Grid.Row="5" VerticalAlignment="Bottom" HorizontalAlignment="Right" Text="Version 2.64" />
                 </Grid>
             </TabItem>
         </TabControl>
