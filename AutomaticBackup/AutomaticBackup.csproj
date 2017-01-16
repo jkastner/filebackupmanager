@@ -58,6 +58,7 @@
     <Compile Include="BackupRunner.cs" />
     <Compile Include="BackupRunnerViewModel.cs" />
     <Compile Include="BackupPatternReader.cs" />
+    <Compile Include="BaseAppSettingsViewModel.cs" />
     <Compile Include="ConfigViewModel.cs" />
     <Compile Include="TextReports\DeleteErrorEvent.cs" />
     <Compile Include="PathConstants.cs" />

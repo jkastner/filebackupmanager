@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using ApplicationConfiguration;
 
 
 namespace AutomaticBackup
@@ -227,9 +226,7 @@ namespace AutomaticBackup
             SaturdayChecked = set.Contains(DayOfWeek.Saturday);
         }
 
-        protected override void LoadOverriddenValues()
-        {
-        }
+
 
         public void ToggleAllDays()
         {
