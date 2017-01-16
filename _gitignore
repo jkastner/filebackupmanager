@@ -1,0 +1,14 @@
+packages/
+*/Scripts/*
+SignalRChatBot/Test_SignalR/Scripts/
+UiBroadcaster/SignalRServerController/Scripts/
+UiBroadcaster/Test_SignalR/Scripts/
+SignalRChatBot/SignalRServerController/Scripts/
+MvcMovie/src/MvcMovie/node_modules/
+CharacterManager/src/CharacterManager/node_modules/
+SudokuAssistant/src/SudokuAssistant/node_modules/
+Test_SDAssist/src/Test_SDAssist/node_modules/
+Test_SDAssistV2/src/
+bin
+obj
+*.suo
